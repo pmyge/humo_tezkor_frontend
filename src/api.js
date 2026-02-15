@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://quiet-hounds-float.loca.lt/api';
+const API_BASE_URL = 'https://beige-sheep-slide.loca.lt/api';
 
 export const api = {
     async getCategories() {
