@@ -1,8 +1,10 @@
 import { getImageUrl } from '../api';
 
-export default function ProductGrid({ products }) {
+export default function ProductGrid({ products, language }) {
     if (products.length === 0) {
-        return <div className="no-products">Mahsulotlar topilmadi</div>;
+        return <div className="no-products">
+            {language === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}
+        </div>;
     }
 
     return (
@@ -10,10 +12,16 @@ export default function ProductGrid({ products }) {
             {products.map(product => (
                 <div key={product.id} className="product-card">
                     <div className="product-image">
-                        <img src={getImageUrl(product.image)} alt={product.name} />
+                        {product.image ? (
+                            <img src={getImageUrl(product.image)} alt={product.name} />
+                        ) : (
+                            <div className="placeholder-image">🖼️</div>
+                        )}
                     </div>
                     <div className="product-info">
-                        <h3 className="product-name">{product.name}</h3>
+                        <h3 className="product-name">
+                            {language === 'ru' ? (product.name_ru || product.name) : product.name}
+                        </h3>
                         <p className="product-price">{product.price.toLocaleString()} UZS</p>
                     </div>
                 </div>
