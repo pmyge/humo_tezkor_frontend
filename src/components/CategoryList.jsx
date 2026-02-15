@@ -1,10 +1,9 @@
 import { getImageUrl } from '../api';
 
-export default function CategoryList({ categories, selectedCategory, onSelectCategory }) {
+export default function CategoryList({ categories, selectedCategory, onSelectCategory, language }) {
     return (
         <div className="category-list-container">
             <div className="category-list">
-                {/* "All" Category if needed or just categories from API */}
                 {categories.map(category => (
                     <div
                         key={category.id}
@@ -18,7 +17,7 @@ export default function CategoryList({ categories, selectedCategory, onSelectCat
                                 <span className="category-icon">📦</span>
                             )}
                         </div>
-                        <span>{category.name}</span>
+                        <span>{language === 'ru' ? (category.name_ru || category.name) : category.name}</span>
                     </div>
                 ))}
             </div>

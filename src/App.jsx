@@ -34,15 +34,29 @@ const RouteGuard = ({ children }) => {
 };
 
 function App() {
+    const [language, setLanguage] = React.useState('uz');
+    const telegram = window.Telegram?.WebApp;
+
     useEffect(() => {
         // Initialize Telegram WebApp
-        if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.ready();
-            tg.expand();
-            tg.MainButton.hide();
+        if (telegram) {
+            telegram.ready();
+            telegram.expand();
+            telegram.MainButton.hide();
+
+            // Fetch user language
+            const fetchLang = async () => {
+                const userId = telegram.initDataUnsafe?.user?.id;
+                if (userId) {
+                    const user = await api.getUserInfo(userId);
+                    if (user?.language) {
+                        setLanguage(user.language);
+                    }
+                }
+            };
+            fetchLang();
         }
-    }, []);
+    }, [telegram]);
 
     return (
         <Router>
@@ -52,7 +66,7 @@ function App() {
                         path="/"
                         element={
                             <RouteGuard>
-                                <Shop />
+                                <Shop language={language} />
                             </RouteGuard>
                         }
                     />

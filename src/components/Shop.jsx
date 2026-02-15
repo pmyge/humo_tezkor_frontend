@@ -4,7 +4,7 @@ import ProductGrid from './ProductGrid';
 import SearchBar from './SearchBar';
 import { api } from '../api';
 
-const Shop = () => {
+const Shop = ({ language }) => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -44,13 +44,13 @@ const Shop = () => {
         }
     };
 
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.name_ru.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredProducts = products.filter(product => {
+        const name = language === 'ru' ? (product.name_ru || product.name) : product.name;
+        return name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
 
     if (loading) {
-        return <div className="loading">Yuklanmoqda...</div>;
+        return <div className="loading">{language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...'}</div>;
     }
 
     return (
@@ -60,19 +60,26 @@ const Shop = () => {
                 <p className="subtitle">mini ilova</p>
             </header>
 
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
+            />
 
             <CategoryList
                 categories={categories}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
+                language={language}
             />
 
             <div className="category-title">
-                {selectedCategory?.name?.toUpperCase()}
+                {language === 'ru'
+                    ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
+                    : selectedCategory?.name?.toUpperCase()}
             </div>
 
-            <ProductGrid products={filteredProducts} />
+            <ProductGrid products={filteredProducts} language={language} />
         </div>
     );
 };
