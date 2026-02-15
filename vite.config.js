@@ -5,10 +5,11 @@ export default defineConfig({
     plugins: [react()],
     server: {
         port: 3000,
-        host: true,
-        allowedHosts: [
-            '.loca.lt'
-        ]
+        host: "0.0.0.0",
+        allowedHosts: true,
+        hmr: {
+            clientPort: 443
+        }
     },
     base: '/'
 })

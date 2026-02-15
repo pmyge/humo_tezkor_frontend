@@ -1,5 +1,4 @@
-import React from 'react';
-import './ProductGrid.css';
+import { getImageUrl } from '../api';
 
 export default function ProductGrid({ products }) {
     if (products.length === 0) {
@@ -11,7 +10,7 @@ export default function ProductGrid({ products }) {
             {products.map(product => (
                 <div key={product.id} className="product-card">
                     <div className="product-image">
-                        <img src={product.image} alt={product.name} />
+                        <img src={getImageUrl(product.image)} alt={product.name} />
                     </div>
                     <div className="product-info">
                         <h3 className="product-name">{product.name}</h3>

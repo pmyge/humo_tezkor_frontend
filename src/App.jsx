@@ -1,20 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
-import CategoryList from './components/CategoryList';
-import ProductGrid from './components/ProductGrid';
-import SearchBar from './components/SearchBar';
+import Shop from './components/Shop';
+import Orders from './components/Orders';
+import PhoneRegistration from './components/PhoneRegistration';
 import { api } from './api';
 
-function App() {
-    const [categories, setCategories] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [loading, setLoading] = useState(true);
+const RouteGuard = ({ children }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const telegram = window.Telegram?.WebApp;
 
     useEffect(() => {
-        loadCategories();
+        const checkUser = async () => {
+            if (telegram?.initDataUnsafe?.user?.id) {
+                const userId = telegram.initDataUnsafe.user.id;
+                try {
+                    const userInfo = await api.getUserInfo(userId);
+                    // If user not found or no phone, and not already on registration page
+                    if ((!userInfo || !userInfo.phone_number) && location.pathname !== '/registration') {
+                        navigate('/registration');
+                    }
+                } catch (err) {
+                    console.error('Auth check error:', err);
+                }
+            }
+        };
 
+        checkUser();
+    }, [navigate, location.pathname, telegram]);
+
+    return children;
+};
+
+function App() {
+    useEffect(() => {
         // Initialize Telegram WebApp
         if (window.Telegram?.WebApp) {
             const tg = window.Telegram.WebApp;
@@ -24,65 +44,30 @@ function App() {
         }
     }, []);
 
-    useEffect(() => {
-        if (selectedCategory) {
-            loadProducts(selectedCategory.id);
-        }
-    }, [selectedCategory]);
-
-    const loadCategories = async () => {
-        try {
-            const data = await api.getCategories();
-            setCategories(data);
-            if (data.length > 0) {
-                setSelectedCategory(data[0]);
-            }
-            setLoading(false);
-        } catch (error) {
-            console.error('Error loading categories:', error);
-            setLoading(false);
-        }
-    };
-
-    const loadProducts = async (categoryId) => {
-        try {
-            const data = await api.getCategoryProducts(categoryId);
-            setProducts(data);
-        } catch (error) {
-            console.error('Error loading products:', error);
-        }
-    };
-
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.name_ru.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (loading) {
-        return <div className="loading">Yuklanmoqda...</div>;
-    }
-
     return (
-        <div className="app">
-            <header className="header">
-                <h1>PUNYO MARKET</h1>
-                <p className="subtitle">mini ilova</p>
-            </header>
-
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
-
-            <CategoryList
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-            />
-
-            <div className="category-title">
-                {selectedCategory?.name?.toUpperCase()}
+        <Router>
+            <div className="app">
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <RouteGuard>
+                                <Shop />
+                            </RouteGuard>
+                        }
+                    />
+                    <Route
+                        path="/orders"
+                        element={
+                            <RouteGuard>
+                                <Orders />
+                            </RouteGuard>
+                        }
+                    />
+                    <Route path="/registration" element={<PhoneRegistration />} />
+                </Routes>
             </div>
-
-            <ProductGrid products={filteredProducts} />
-        </div>
+        </Router>
     );
 }
 

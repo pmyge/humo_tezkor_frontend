@@ -1,5 +1,4 @@
-import React from 'react';
-import './CategoryList.css';
+import { getImageUrl } from '../api';
 
 export default function CategoryList({ categories, selectedCategory, onSelectCategory }) {
     return (
@@ -12,7 +11,7 @@ export default function CategoryList({ categories, selectedCategory, onSelectCat
                         onClick={() => onSelectCategory(category)}
                     >
                         <div className="category-icon">
-                            <img src={category.image} alt={category.name} />
+                            <img src={getImageUrl(category.image)} alt={category.name} />
                         </div>
                         <span className="category-name">{category.name}</span>
                     </button>
