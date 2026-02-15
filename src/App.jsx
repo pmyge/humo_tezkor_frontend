@@ -21,6 +21,10 @@ const RouteGuard = ({ children }) => {
                     if ((!userInfo || !userInfo.phone_number) && location.pathname !== '/registration') {
                         navigate('/registration');
                     }
+                    if (userInfo?.language) {
+                        // This helps sync if they changed it in the bot and re-opened
+                        window.dispatchEvent(new CustomEvent('langChange', { detail: userInfo.language }));
+                    }
                 } catch (err) {
                     console.error('Auth check error:', err);
                 }
@@ -56,6 +60,10 @@ function App() {
             };
             fetchLang();
         }
+
+        const handleLangChange = (e) => setLanguage(e.detail);
+        window.addEventListener('langChange', handleLangChange);
+        return () => window.removeEventListener('langChange', handleLangChange);
     }, [telegram]);
 
     return (

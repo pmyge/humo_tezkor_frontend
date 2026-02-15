@@ -1,4 +1,5 @@
 import { getImageUrl } from '../api';
+import './CategoryList.css';
 
 export default function CategoryList({ categories, selectedCategory, onSelectCategory, language }) {
     return (

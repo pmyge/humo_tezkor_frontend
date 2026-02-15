@@ -1,4 +1,5 @@
 import { getImageUrl } from '../api';
+import './ProductGrid.css';
 
 export default function ProductGrid({ products, language }) {
     if (products.length === 0) {
