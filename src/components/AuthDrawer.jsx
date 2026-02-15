@@ -9,8 +9,8 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
     const telegram = window.Telegram.WebApp;
 
     const handleContinue = async () => {
-        if (phoneNumber.length < 9) {
-            setError(language === 'ru' ? 'Неверный номер телефона' : 'Nomer noto\'g\'ri kiritildi');
+        if (phoneNumber.length < 3) {
+            setError(language === 'ru' ? 'Слишком короткий номер' : 'Nomer juda qisqa');
             return;
         }
 
@@ -64,7 +64,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
                         <input
                             type="tel"
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, '').slice(0, 9))}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             placeholder="00 000 00 00"
                             className="phone-field"
                         />
@@ -80,7 +80,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
                     <button
                         className="drawer-continue-btn"
                         onClick={handleContinue}
-                        disabled={loading || phoneNumber.length < 9}
+                        disabled={loading || phoneNumber.length < 3}
                     >
                         {loading
                             ? (language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...')

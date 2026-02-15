@@ -16,8 +16,8 @@ const PhoneRegistration = () => {
     }, []);
 
     const handleContinue = async () => {
-        if (phoneNumber.length < 9) {
-            setError('Nomer noto\'g\'ri kiritildi');
+        if (phoneNumber.replace('+998', '').length < 3) {
+            setError('Nomer juda qisqa');
             return;
         }
 
