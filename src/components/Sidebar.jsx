@@ -8,7 +8,6 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) =
         { id: 'favorites', icon: '❤️', label: language === 'ru' ? 'Izbrannoe' : 'Sevimliklar' },
         { id: 'addresses', icon: '📍', label: language === 'ru' ? 'Moi adresa' : 'Manzillarim' },
         { id: 'notifications', icon: '🔔', label: language === 'ru' ? 'Uvedomleniya' : 'Bildirishmalar' },
-        { id: 'language', icon: '🌐', label: language === 'ru' ? 'Yazyk' : 'Til' },
         { id: 'about', icon: 'ℹ️', label: language === 'ru' ? 'O nas' : 'Biz haqimizda' },
     ];
 
@@ -38,16 +37,6 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) =
                 </nav>
 
                 <div className="sidebar-footer">
-                    <div className="language-selector">
-                        <select
-                            value={language}
-                            onChange={(e) => onLanguageChange(e.target.value)}
-                            className="lang-select"
-                        >
-                            <option value="uz">🇺🇿 O'zbekcha</option>
-                            <option value="ru">🇷🇺 Русский</option>
-                        </select>
-                    </div>
 
                     <div className="contact-info">
                         <div className="contact-icon">🎧</div>

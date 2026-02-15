@@ -22,7 +22,13 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         try {
             // Use telegram user ID if available, otherwise use a fallback for testing
             const tgUser = telegram?.initDataUnsafe?.user;
-            const userId = tgUser?.id || 12345678;
+            const userId = tgUser?.id;
+
+            if (!userId) {
+                setError(language === 'ru' ? 'Ошибка Telegram ID' : 'Telegram ID xatoligi');
+                setLoading(false);
+                return;
+            }
 
             const fullPhone = selectedCountry.code + phoneNumber;
             const response = await api.registerPhone(

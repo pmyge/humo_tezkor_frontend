@@ -33,17 +33,18 @@ const Shop = ({ language }) => {
             const telegram = window.Telegram?.WebApp;
             const tgUser = telegram?.initDataUnsafe?.user;
             if (tgUser) {
-                const userData = await api.getUserInfo(tgUser.id);
                 if (userData && userData.phone_number) {
-                    // Sync name if it's Admin or empty
-                    if ((!userData.first_name || userData.first_name === 'Admin') && tgUser.first_name) {
+                    // Force sync name from Telegram if it's Admin or empty
+                    const realName = tgUser.first_name || '';
+                    if ((!userData.first_name || userData.first_name === 'Admin') && realName) {
                         try {
                             const updated = await api.updateUser(tgUser.id, {
-                                first_name: tgUser.first_name,
+                                first_name: realName,
                                 last_name: tgUser.last_name || ''
                             });
                             setCurrentUser(updated || userData);
                         } catch (e) {
+                            console.error('Name sync failed:', e);
                             setCurrentUser(userData);
                         }
                     } else {
