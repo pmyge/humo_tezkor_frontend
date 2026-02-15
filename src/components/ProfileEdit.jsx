@@ -9,7 +9,8 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const result = await api.updateUser(user.telegram_id, { first_name: name });
+            const userId = user.telegram_user_id || user.telegram_id;
+            const result = await api.updateUser(userId, { first_name: name });
             if (result) {
                 onSave(result);
             }
