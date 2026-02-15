@@ -46,6 +46,16 @@ const Shop = ({ language }) => {
         }
     }, [selectedCategory]);
 
+    const handleSidebarItemClick = (id) => {
+        if (id === 'profile') {
+            if (currentUser) {
+                setView('profile');
+            } else {
+                setIsAuthDrawerOpen(true);
+            }
+        }
+    };
+
     const loadCategories = async () => {
         try {
             const data = await api.getCategories();
