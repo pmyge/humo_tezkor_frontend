@@ -1,11 +1,14 @@
 import { getImageUrl } from '../api';
 import './CategoryList.css';
 
-export default function CategoryList({ categories, selectedCategory, onSelectCategory, language }) {
+export default function CategoryList({ categories, selectedCategory, onSelectCategory, onShowAllCategories, language }) {
+    const displayCategories = categories.slice(0, 15);
+    const hasMore = categories.length > 15;
+
     return (
         <div className="category-list-container">
             <div className="category-list">
-                {categories.map(category => (
+                {displayCategories.map(category => (
                     <div
                         key={category.id}
                         className={`category-item ${selectedCategory?.id === category.id ? 'active' : ''}`}
@@ -21,6 +24,15 @@ export default function CategoryList({ categories, selectedCategory, onSelectCat
                         <span>{language === 'ru' ? (category.name_ru || category.name) : category.name}</span>
                     </div>
                 ))}
+
+                {hasMore && (
+                    <div className="category-item more-button" onClick={onShowAllCategories}>
+                        <div className="category-image-container more-icon">
+                            <span className="category-icon">➕</span>
+                        </div>
+                        <span>{language === 'ru' ? 'Ещё' : 'Batafsil'}</span>
+                    </div>
+                )}
             </div>
         </div>
     );

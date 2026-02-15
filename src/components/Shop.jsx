@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import CategoryList from './CategoryList';
 import ProductGrid from './ProductGrid';
 import SearchBar from './SearchBar';
+import CategorySection from './CategorySection';
 import { api } from '../api';
+import './CategorySection.css';
 
 const Shop = ({ language }) => {
     const [categories, setCategories] = useState([]);
-    const [products, setProducts] = useState([]);
+    const [allProducts, setAllProducts] = useState([]); // For search in all products
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products'
 
     useEffect(() => {
         loadCategories();
@@ -17,7 +20,10 @@ const Shop = ({ language }) => {
 
     useEffect(() => {
         if (selectedCategory) {
-            loadProducts(selectedCategory.id);
+            setView('category_products');
+            loadCategoryProducts(selectedCategory.id);
+        } else {
+            setView('home');
         }
     }, [selectedCategory]);
 
@@ -25,9 +31,6 @@ const Shop = ({ language }) => {
         try {
             const data = await api.getCategories();
             setCategories(data);
-            if (data.length > 0) {
-                setSelectedCategory(data[0]);
-            }
             setLoading(false);
         } catch (error) {
             console.error('Error loading categories:', error);
@@ -35,16 +38,16 @@ const Shop = ({ language }) => {
         }
     };
 
-    const loadProducts = async (categoryId) => {
+    const loadCategoryProducts = async (categoryId) => {
         try {
             const data = await api.getCategoryProducts(categoryId);
-            setProducts(data);
+            setAllProducts(data);
         } catch (error) {
             console.error('Error loading products:', error);
         }
     };
 
-    const filteredProducts = products.filter(product => {
+    const filteredProducts = allProducts.filter(product => {
         const name = language === 'ru' ? (product.name_ru || product.name) : product.name;
         return name.toLowerCase().includes(searchQuery.toLowerCase());
     });
@@ -52,6 +55,78 @@ const Shop = ({ language }) => {
     if (loading) {
         return <div className="loading">{language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...'}</div>;
     }
+
+    const renderContent = () => {
+        if (searchQuery) {
+            return (
+                <div className="search-results">
+                    <div className="category-title">
+                        {language === 'ru' ? 'РЕЗУЛЬТАТЫ ПОИСКА' : 'QIDIRUV NATIJALARI'}
+                    </div>
+                    <ProductGrid products={filteredProducts} language={language} />
+                </div>
+            );
+        }
+
+        if (view === 'all_categories') {
+            return (
+                <div className="all-categories-view">
+                    <div className="category-title">
+                        <span className="back-btn" onClick={() => setView('home')}>←</span>
+                        {language === 'ru' ? 'ВСЕ КАТЕГОРИИ' : 'BARCHA KATEGORIYALAR'}
+                    </div>
+                    <div className="categories-grid">
+                        {categories.map(cat => (
+                            <div key={cat.id} className="category-item-large" onClick={() => setSelectedCategory(cat)}>
+                                <div className="category-image-container">
+                                    {cat.image ? <img src={api.getImageUrl(cat.image)} alt={cat.name} /> : <span>📦</span>}
+                                </div>
+                                <span>{language === 'ru' ? (cat.name_ru || cat.name) : cat.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        if (view === 'category_products' && selectedCategory) {
+            return (
+                <div className="detail-view">
+                    <div className="category-title">
+                        <span className="back-btn" onClick={() => setSelectedCategory(null)}>←</span>
+                        {language === 'ru'
+                            ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
+                            : selectedCategory?.name?.toUpperCase()}
+                    </div>
+                    <ProductGrid products={filteredProducts} language={language} />
+                </div>
+            );
+        }
+
+        // Default: Home View
+        return (
+            <div className="home-content">
+                <CategoryList
+                    categories={categories}
+                    selectedCategory={null}
+                    onSelectCategory={setSelectedCategory}
+                    onShowAllCategories={() => setView('all_categories')}
+                    language={language}
+                />
+
+                <div className="featured-sections">
+                    {categories.slice(0, 6).map(category => (
+                        <CategorySection
+                            key={category.id}
+                            category={category}
+                            language={language}
+                            onSelectCategory={setSelectedCategory}
+                        />
+                    ))}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="shop-view">
@@ -68,20 +143,7 @@ const Shop = ({ language }) => {
                 />
             </div>
 
-            <CategoryList
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-                language={language}
-            />
-
-            <div className="category-title">
-                {language === 'ru'
-                    ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
-                    : selectedCategory?.name?.toUpperCase()}
-            </div>
-
-            <ProductGrid products={filteredProducts} language={language} />
+            {renderContent()}
         </div>
     );
 };
