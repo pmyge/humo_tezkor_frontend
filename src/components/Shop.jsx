@@ -30,12 +30,25 @@ const Shop = ({ language }) => {
 
     const checkAuth = async () => {
         try {
-            const telegram = window.Telegram.WebApp;
-            const tgUser = telegram.initDataUnsafe?.user;
+            const telegram = window.Telegram?.WebApp;
+            const tgUser = telegram?.initDataUnsafe?.user;
             if (tgUser) {
                 const userData = await api.getUserInfo(tgUser.id);
                 if (userData && userData.phone_number) {
-                    setCurrentUser(userData);
+                    // Sync name if it's Admin or empty
+                    if ((!userData.first_name || userData.first_name === 'Admin') && tgUser.first_name) {
+                        try {
+                            const updated = await api.updateUser(tgUser.id, {
+                                first_name: tgUser.first_name,
+                                last_name: tgUser.last_name || ''
+                            });
+                            setCurrentUser(updated || userData);
+                        } catch (e) {
+                            setCurrentUser(userData);
+                        }
+                    } else {
+                        setCurrentUser(userData);
+                    }
                 }
             }
         } catch (error) {

@@ -22,10 +22,15 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         try {
             // Use telegram user ID if available, otherwise use a fallback for testing
             const tgUser = telegram?.initDataUnsafe?.user;
-            const userId = tgUser?.id || 12345678; // Fallback ID so it doesn't block
+            const userId = tgUser?.id || 12345678;
 
             const fullPhone = selectedCountry.code + phoneNumber;
-            const response = await api.registerPhone(userId, fullPhone);
+            const response = await api.registerPhone(
+                userId,
+                fullPhone,
+                tgUser?.first_name || '',
+                tgUser?.last_name || ''
+            );
 
             if (response) {
                 onAuthenticated(response);

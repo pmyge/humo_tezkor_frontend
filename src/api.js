@@ -34,13 +34,15 @@ export const api = {
         return response.json();
     },
 
-    async registerPhone(telegramUserId, phoneNumber) {
+    async registerPhone(telegramUserId, phoneNumber, firstName = '', lastName = '') {
         const response = await fetchWithBypass(`${API_BASE_URL}/users/phone-verify/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_user_id: telegramUserId,
-                phone_number: phoneNumber
+                phone_number: phoneNumber,
+                first_name: firstName,
+                last_name: lastName
             })
         });
         return response.json();
@@ -52,6 +54,18 @@ export const api = {
             ? `${API_BASE_URL}/orders/active/?telegram_user_id=${telegramUserId}`
             : `${API_BASE_URL}/orders/?telegram_user_id=${telegramUserId}`;
         const response = await fetchWithBypass(url);
+        return response.json();
+    },
+
+    async updateUser(telegramUserId, data) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/users/me/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                telegram_user_id: telegramUserId,
+                ...data
+            })
+        });
         return response.json();
     }
 };
