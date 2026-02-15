@@ -67,7 +67,19 @@ export const api = {
             })
         });
         return response.json();
+    },
+
+    async changeLanguage(telegramUserId, language) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/users/language/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                telegram_user_id: telegramUserId,
+                language: language
+            })
+        });
+        return response.json();
     }
-};
+}
 
 

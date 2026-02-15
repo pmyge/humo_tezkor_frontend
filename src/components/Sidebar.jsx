@@ -37,6 +37,16 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) =
                 </nav>
 
                 <div className="sidebar-footer">
+                    <div className="language-selector">
+                        <select
+                            value={language}
+                            onChange={(e) => onLanguageChange(e.target.value)}
+                            className="lang-select"
+                        >
+                            <option value="uz">🇺🇿 O'zbekcha</option>
+                            <option value="ru">🇷🇺 Русский</option>
+                        </select>
+                    </div>
 
                     <div className="contact-info">
                         <div className="contact-icon">🎧</div>

@@ -198,8 +198,17 @@ const Shop = ({ language }) => {
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
                 language={language}
-                onLanguageChange={(lang) => {
+                onLanguageChange={async (lang) => {
+                    // Update local state
                     window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));
+                    // Update backend if user is logged in
+                    if (currentUser) {
+                        try {
+                            await api.changeLanguage(currentUser.telegram_user_id, lang);
+                        } catch (e) {
+                            console.error('Failed to sync language to backend:', e);
+                        }
+                    }
                 }}
                 onItemClick={handleSidebarItemClick}
             />
