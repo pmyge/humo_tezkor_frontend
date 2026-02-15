@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import CategoryList from './CategoryList';
+import ProductGrid from './ProductGrid';
+import SearchBar from './SearchBar';
 import CategorySection from './CategorySection';
 import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
@@ -5,6 +9,8 @@ import ProfileEdit from './ProfileEdit';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
+import './SearchBar.css';
+import '../index.css';
 
 const Shop = ({ language }) => {
     const [categories, setCategories] = useState([]);
