@@ -33,6 +33,7 @@ const Shop = ({ language }) => {
             const telegram = window.Telegram?.WebApp;
             const tgUser = telegram?.initDataUnsafe?.user;
             if (tgUser) {
+                const userData = await api.getUserInfo(tgUser.id);
                 if (userData && userData.phone_number) {
                     // Force sync name from Telegram if it's Admin or empty
                     const realName = tgUser.first_name || '';
