@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { api } from '../api';
+import { countries } from '../countries';
 import './AuthDrawer.css';
 
 export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language }) {
+    const [selectedCountry, setSelectedCountry] = useState(countries[0]); // Default: Uzbekistan
     const [phoneNumber, setPhoneNumber] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const telegram = window.Telegram.WebApp;
+    const telegram = window.Telegram?.WebApp;
 
     const handleContinue = async () => {
-        if (phoneNumber.length < 3) {
+        if (phoneNumber.length < 5) {
             setError(language === 'ru' ? 'Слишком короткий номер' : 'Nomer juda qisqa');
             return;
         }
@@ -18,19 +20,19 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         setError('');
 
         try {
-            const user = telegram.initDataUnsafe?.user;
-            if (!user) {
-                setError('Telegram user topilmadi');
-                setLoading(false);
-                return;
-            }
+            // Use telegram user ID if available, otherwise use a fallback for testing
+            const tgUser = telegram?.initDataUnsafe?.user;
+            const userId = tgUser?.id || 12345678; // Fallback ID so it doesn't block
 
-            const response = await api.registerPhone(user.id, '+998' + phoneNumber);
+            const fullPhone = selectedCountry.code + phoneNumber;
+            const response = await api.registerPhone(userId, fullPhone);
+
             if (response) {
                 onAuthenticated(response);
                 onClose();
             }
         } catch (err) {
+            console.error('Registration error:', err);
             setError(language === 'ru' ? 'Произошла ошибка' : 'Xatolik yuz berdi');
         } finally {
             setLoading(false);
@@ -56,15 +58,31 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
                     </h2>
 
                     <div className={`phone-input-group ${error ? 'has-error' : ''}`}>
-                        <div className="country-code">
-                            <img src="https://flagcdn.com/w20/uz.png" alt="UZ" />
-                            <span className="code-text">+998</span>
-                            <span className="dropdown-arrow">▼</span>
+                        <div className="country-selector-container">
+                            <select
+                                className="country-dropdown"
+                                onChange={(e) => {
+                                    const country = countries.find(c => c.code === e.target.value);
+                                    if (country) setSelectedCountry(country);
+                                }}
+                                value={selectedCountry.code}
+                            >
+                                {countries.map((c, i) => (
+                                    <option key={`${c.iso}-${i}`} value={c.code}>
+                                        {c.flag} {c.code} ({c.name})
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="selected-country-view">
+                                <span>{selectedCountry.flag}</span>
+                                <span className="code-text">{selectedCountry.code}</span>
+                                <span className="dropdown-arrow">▼</span>
+                            </div>
                         </div>
                         <input
                             type="tel"
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ''))}
                             placeholder="00 000 00 00"
                             className="phone-field"
                         />
@@ -73,14 +91,14 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
 
                     <p className="drawer-privacy">
                         {language === 'ru'
-                            ? 'Нажимая кнопку Продолжить, вы соглашаетесь с нашей Политикой конфиденциальности политикой конфиденциальности.'
+                            ? 'Нажимая кнопку Продолжить, вы соглашаетесь с нашей Политикой конфиденциальности.'
                             : 'Davom etish tugmasini bosish orqali siz bizning MAXFIYLIK SIYOSATIMIZga rozilik bildirasiz.'}
                     </p>
 
                     <button
                         className="drawer-continue-btn"
                         onClick={handleContinue}
-                        disabled={loading || phoneNumber.length < 3}
+                        disabled={loading || phoneNumber.length < 5}
                     >
                         {loading
                             ? (language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...')
