@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import CategoryList from './CategoryList';
-import ProductGrid from './ProductGrid';
-import SearchBar from './SearchBar';
 import CategorySection from './CategorySection';
 import Sidebar from './Sidebar';
+import AuthDrawer from './AuthDrawer';
+import ProfileEdit from './ProfileEdit';
 import { api } from '../api';
 import './CategorySection.css';
+import './ProfileEdit.css';
 
 const Shop = ({ language }) => {
     const [categories, setCategories] = useState([]);
@@ -13,12 +12,30 @@ const Shop = ({ language }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products'
+    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products', 'profile'
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
         loadCategories();
+        checkAuth();
     }, []);
+
+    const checkAuth = async () => {
+        try {
+            const telegram = window.Telegram.WebApp;
+            const tgUser = telegram.initDataUnsafe?.user;
+            if (tgUser) {
+                const userData = await api.getUserInfo(tgUser.id);
+                if (userData && userData.phone_number) {
+                    setCurrentUser(userData);
+                }
+            }
+        } catch (error) {
+            console.error('Auth check error:', error);
+        }
+    };
 
     useEffect(() => {
         if (selectedCategory) {
@@ -105,6 +122,20 @@ const Shop = ({ language }) => {
             );
         }
 
+        if (view === 'profile' && currentUser) {
+            return (
+                <ProfileEdit
+                    user={currentUser}
+                    language={language}
+                    onBack={() => setView('home')}
+                    onSave={(updated) => {
+                        setCurrentUser(updated);
+                        setView('home');
+                    }}
+                />
+            );
+        }
+
         // Default: Home View
         return (
             <div className="home-content">
@@ -137,8 +168,18 @@ const Shop = ({ language }) => {
                 onClose={() => setIsSidebarOpen(false)}
                 language={language}
                 onLanguageChange={(lang) => {
-                    // This will eventually call the api and update bot lang
                     window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));
+                }}
+                onItemClick={handleSidebarItemClick}
+            />
+
+            <AuthDrawer
+                isOpen={isAuthDrawerOpen}
+                onClose={() => setIsAuthDrawerOpen(false)}
+                language={language}
+                onAuthenticated={(user) => {
+                    setCurrentUser(user);
+                    setView('profile');
                 }}
             />
 

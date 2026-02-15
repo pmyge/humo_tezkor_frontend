@@ -1,7 +1,7 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose, language, onLanguageChange }) => {
+const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) => {
     const menuItems = [
         { id: 'profile', icon: '👤', label: language === 'ru' ? 'Личные данные' : "Shaxsiy ma'lumotlarim" },
         { id: 'orders', icon: '📋', label: language === 'ru' ? 'Мои заказы' : 'Buyurtmalarim' },
@@ -27,7 +27,10 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange }) => {
 
                 <nav className="sidebar-nav">
                     {menuItems.map((item) => (
-                        <div key={item.id} className="sidebar-item" onClick={() => {/* Navigation logic */ }}>
+                        <div key={item.id} className="sidebar-item" onClick={() => {
+                            onItemClick(item.id);
+                            onClose();
+                        }}>
                             <span className="item-icon">{item.icon}</span>
                             <span className="item-label">{item.label}</span>
                         </div>
