@@ -60,11 +60,13 @@ const Shop = ({ language }) => {
                 <p className="subtitle">mini ilova</p>
             </header>
 
-            <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
-            />
+            <div className="search-container">
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
+                />
+            </div>
 
             <CategoryList
                 categories={categories}
