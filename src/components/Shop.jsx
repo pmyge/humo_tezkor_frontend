@@ -3,6 +3,7 @@ import CategoryList from './CategoryList';
 import ProductGrid from './ProductGrid';
 import SearchBar from './SearchBar';
 import CategorySection from './CategorySection';
+import Sidebar from './Sidebar';
 import { api } from '../api';
 import './CategorySection.css';
 
@@ -13,6 +14,7 @@ const Shop = ({ language }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products'
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         loadCategories();
@@ -129,9 +131,25 @@ const Shop = ({ language }) => {
     };
 
     return (
-        <div className="shop-view">
+        <div className={`shop-view ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                language={language}
+                onLanguageChange={(lang) => {
+                    // This will eventually call the api and update bot lang
+                    window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));
+                }}
+            />
+
             <header className="header">
-                <h1>PUNYO MARKET</h1>
+                <div className="header-top">
+                    <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                        <span className="menu-icon">☰</span>
+                    </button>
+                    <h1>PUNYO MARKET</h1>
+                    <div className="header-placeholder"></div>
+                </div>
                 <p className="subtitle">mini ilova</p>
             </header>
 
