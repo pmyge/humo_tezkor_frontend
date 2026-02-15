@@ -12,7 +12,8 @@ export const getImageUrl = (path) => {
     if (!path) return '';
     if (path.startsWith('http')) return path;
     const base = API_BASE_URL.replace('/api', '');
-    return `${base}${path}`;
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${base}${cleanPath}`;
 };
 
 export const api = {
