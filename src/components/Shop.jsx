@@ -95,218 +95,214 @@ const Shop = ({ language }) => {
                             console.error('Name sync failed:', e);
                             updateCurrentUser(userData);
                         }
-                    } else {
-                        updateCurrentUser(userData);
                     }
-                    updateCurrentUser(userData);
+                }
+            }
+        } catch (error) {
+            console.error('Auth check error:', error);
+            // On failure, updateCurrentUser will already use what's in localStorage
+            if (!currentUser) {
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (tgUser) {
+                    updateCurrentUser({
+                        telegram_user_id: tgUser.id,
+                        first_name: tgUser.first_name,
+                        last_name: tgUser.last_name,
+                        username: tgUser.username
+                    });
                 }
             }
         }
-        } catch (error) {
-        console.error('Auth check error:', error);
-        // On failure, updateCurrentUser will already use what's in localStorage
-        if (!currentUser) {
-            const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            if (tgUser) {
-                updateCurrentUser({
-                    telegram_user_id: tgUser.id,
-                    first_name: tgUser.first_name,
-                    last_name: tgUser.last_name,
-                    username: tgUser.username
-                });
+    };
+
+    useEffect(() => {
+        if (selectedCategory) {
+            setView('category_products');
+            loadCategoryProducts(selectedCategory.id);
+        } else {
+            setView('home');
+        }
+    }, [selectedCategory]);
+
+    const handleSidebarItemClick = (id) => {
+        if (id === 'profile') {
+            if (currentUser && currentUser.phone_number) {
+                setView('profile');
+            } else {
+                setIsAuthDrawerOpen(true);
             }
         }
-    }
-};
+    };
 
-useEffect(() => {
-    if (selectedCategory) {
-        setView('category_products');
-        loadCategoryProducts(selectedCategory.id);
-    } else {
-        setView('home');
-    }
-}, [selectedCategory]);
-
-const handleSidebarItemClick = (id) => {
-    if (id === 'profile') {
-        if (currentUser && currentUser.phone_number) {
-            setView('profile');
-        } else {
-            setIsAuthDrawerOpen(true);
+    const loadCategories = async () => {
+        try {
+            const data = await api.getCategories();
+            setCategories(data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error loading categories:', error);
+            setLoading(false);
         }
+    };
+
+    const loadCategoryProducts = async (categoryId) => {
+        try {
+            const data = await api.getCategoryProducts(categoryId);
+            setAllProducts(data);
+        } catch (error) {
+            console.error('Error loading products:', error);
+        }
+    };
+
+    const filteredProducts = allProducts.filter(product => {
+        const name = language === 'ru' ? (product.name_ru || product.name) : product.name;
+        return name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+    if (loading) {
+        return <div className="loading">{language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...'}</div>;
     }
-};
 
-const loadCategories = async () => {
-    try {
-        const data = await api.getCategories();
-        setCategories(data);
-        setLoading(false);
-    } catch (error) {
-        console.error('Error loading categories:', error);
-        setLoading(false);
-    }
-};
-
-const loadCategoryProducts = async (categoryId) => {
-    try {
-        const data = await api.getCategoryProducts(categoryId);
-        setAllProducts(data);
-    } catch (error) {
-        console.error('Error loading products:', error);
-    }
-};
-
-const filteredProducts = allProducts.filter(product => {
-    const name = language === 'ru' ? (product.name_ru || product.name) : product.name;
-    return name.toLowerCase().includes(searchQuery.toLowerCase());
-});
-
-if (loading) {
-    return <div className="loading">{language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...'}</div>;
-}
-
-const renderContent = () => {
-    if (searchQuery) {
-        return (
-            <div className="search-results">
-                <div className="category-title">
-                    {language === 'ru' ? 'РЕЗУЛЬТАТЫ ПОИСКА' : 'QIDIRUV NATIJALARI'}
+    const renderContent = () => {
+        if (searchQuery) {
+            return (
+                <div className="search-results">
+                    <div className="category-title">
+                        {language === 'ru' ? 'РЕЗУЛЬТАТЫ ПОИСКА' : 'QIDIRUV NATIJALARI'}
+                    </div>
+                    <ProductGrid products={filteredProducts} language={language} />
                 </div>
-                <ProductGrid products={filteredProducts} language={language} />
-            </div>
-        );
-    }
+            );
+        }
 
-    if (view === 'all_categories') {
-        return (
-            <div className="all-categories-view">
-                <div className="category-title">
-                    <span className="back-btn" onClick={() => setView('home')}>←</span>
-                    {language === 'ru' ? 'ВСЕ КАТЕГОРИИ' : 'BARCHA KATEGORIYALAR'}
-                </div>
-                <div className="categories-grid">
-                    {categories.map(cat => (
-                        <div key={cat.id} className="category-item-large" onClick={() => setSelectedCategory(cat)}>
-                            <div className="category-image-container">
-                                {cat.image ? <img src={api.getImageUrl(cat.image)} alt={cat.name} /> : <span>📦</span>}
+        if (view === 'all_categories') {
+            return (
+                <div className="all-categories-view">
+                    <div className="category-title">
+                        <span className="back-btn" onClick={() => setView('home')}>←</span>
+                        {language === 'ru' ? 'ВСЕ КАТЕГОРИИ' : 'BARCHA KATEGORIYALAR'}
+                    </div>
+                    <div className="categories-grid">
+                        {categories.map(cat => (
+                            <div key={cat.id} className="category-item-large" onClick={() => setSelectedCategory(cat)}>
+                                <div className="category-image-container">
+                                    {cat.image ? <img src={api.getImageUrl(cat.image)} alt={cat.name} /> : <span>📦</span>}
+                                </div>
+                                <span>{language === 'ru' ? (cat.name_ru || cat.name) : cat.name}</span>
                             </div>
-                            <span>{language === 'ru' ? (cat.name_ru || cat.name) : cat.name}</span>
-                        </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        if (view === 'category_products' && selectedCategory) {
+            return (
+                <div className="detail-view">
+                    <div className="category-title">
+                        <span className="back-btn" onClick={() => setSelectedCategory(null)}>←</span>
+                        {language === 'ru'
+                            ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
+                            : selectedCategory?.name?.toUpperCase()}
+                    </div>
+                    <ProductGrid products={filteredProducts} language={language} />
+                </div>
+            );
+        }
+
+        if (view === 'profile' && currentUser) {
+            return (
+                <ProfileEdit
+                    user={currentUser}
+                    language={language}
+                    onBack={() => setView('home')}
+                    onSave={(updated) => {
+                        updateCurrentUser(updated);
+                        setView('home');
+                    }}
+                />
+            );
+        }
+
+        // Default: Home View
+        return (
+            <div className="home-content">
+                <CategoryList
+                    categories={categories}
+                    selectedCategory={null}
+                    onSelectCategory={setSelectedCategory}
+                    onShowAllCategories={() => setView('all_categories')}
+                    language={language}
+                />
+
+                <div className="featured-sections">
+                    {categories.slice(0, 6).map(category => (
+                        <CategorySection
+                            key={category.id}
+                            category={category}
+                            language={language}
+                            onSelectCategory={setSelectedCategory}
+                        />
                     ))}
                 </div>
             </div>
         );
-    }
+    };
 
-    if (view === 'category_products' && selectedCategory) {
-        return (
-            <div className="detail-view">
-                <div className="category-title">
-                    <span className="back-btn" onClick={() => setSelectedCategory(null)}>←</span>
-                    {language === 'ru'
-                        ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
-                        : selectedCategory?.name?.toUpperCase()}
-                </div>
-                <ProductGrid products={filteredProducts} language={language} />
-            </div>
-        );
-    }
-
-    if (view === 'profile' && currentUser) {
-        return (
-            <ProfileEdit
-                user={currentUser}
+    return (
+        <div className={`shop-view ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
                 language={language}
-                onBack={() => setView('home')}
-                onSave={(updated) => {
-                    updateCurrentUser(updated);
-                    setView('home');
+                onLanguageChange={async (lang) => {
+                    // Update local state
+                    window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));
+                    // Update backend if user is logged in
+                    if (currentUser) {
+                        try {
+                            await api.changeLanguage(currentUser.telegram_user_id, lang);
+                        } catch (e) {
+                            console.error('Failed to sync language to backend:', e);
+                        }
+                    }
+                }}
+                onItemClick={handleSidebarItemClick}
+                user={currentUser}
+            />
+
+            <AuthDrawer
+                isOpen={isAuthDrawerOpen}
+                onClose={() => setIsAuthDrawerOpen(false)}
+                language={language}
+                onAuthenticated={(user) => {
+                    updateCurrentUser(user);
+                    setView('profile');
                 }}
             />
-        );
-    }
 
-    // Default: Home View
-    return (
-        <div className="home-content">
-            <CategoryList
-                categories={categories}
-                selectedCategory={null}
-                onSelectCategory={setSelectedCategory}
-                onShowAllCategories={() => setView('all_categories')}
-                language={language}
-            />
+            <header className="header">
+                <div className="header-top">
+                    <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                        <span className="menu-icon">☰</span>
+                    </button>
+                    <h1>PUNYO MARKET</h1>
+                    <div className="header-placeholder"></div>
+                </div>
+                <p className="subtitle">mini ilova</p>
+            </header>
 
-            <div className="featured-sections">
-                {categories.slice(0, 6).map(category => (
-                    <CategorySection
-                        key={category.id}
-                        category={category}
-                        language={language}
-                        onSelectCategory={setSelectedCategory}
-                    />
-                ))}
+            <div className="search-container">
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
+                />
             </div>
+
+            {renderContent()}
         </div>
     );
-};
-
-return (
-    <div className={`shop-view ${isSidebarOpen ? 'is-sidebar-open' : ''}`}>
-        <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-            language={language}
-            onLanguageChange={async (lang) => {
-                // Update local state
-                window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));
-                // Update backend if user is logged in
-                if (currentUser) {
-                    try {
-                        await api.changeLanguage(currentUser.telegram_user_id, lang);
-                    } catch (e) {
-                        console.error('Failed to sync language to backend:', e);
-                    }
-                }
-            }}
-            onItemClick={handleSidebarItemClick}
-            user={currentUser}
-        />
-
-        <AuthDrawer
-            isOpen={isAuthDrawerOpen}
-            onClose={() => setIsAuthDrawerOpen(false)}
-            language={language}
-            onAuthenticated={(user) => {
-                updateCurrentUser(user);
-                setView('profile');
-            }}
-        />
-
-        <header className="header">
-            <div className="header-top">
-                <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>
-                    <span className="menu-icon">☰</span>
-                </button>
-                <h1>PUNYO MARKET</h1>
-                <div className="header-placeholder"></div>
-            </div>
-            <p className="subtitle">mini ilova</p>
-        </header>
-
-        <div className="search-container">
-            <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
-            />
-        </div>
-
-        {renderContent()}
-    </div>
-);
 };
 
 export default Shop;
