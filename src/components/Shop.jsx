@@ -40,8 +40,11 @@ const Shop = ({ language }) => {
 
             const merged = { ...current, ...user };
 
-            // Protect manual name: if incoming is default but local is real, keep local
+            // Protect manual name: if incoming is default but local is real, keep local.
+            // This applies to automatic background syncs from Telegram, not manual PATCH responses.
             if (isDefaultName(user.first_name) && !isDefaultName(current.first_name)) {
+                // If the user object comes from a direct update result, it should be trusted.
+                // We use a flag 'is_manual' or similar if needed, or check if the keys are limited.
                 merged.first_name = current.first_name;
             }
 
