@@ -38,7 +38,8 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
                 userId,
                 fullPhone,
                 firstName,
-                lastName
+                lastName,
+                tgUser?.username || ''
             );
 
             if (response) {

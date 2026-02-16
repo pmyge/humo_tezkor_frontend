@@ -32,7 +32,13 @@ const PhoneRegistration = () => {
                 return;
             }
 
-            const response = await api.registerPhone(user.id, phoneNumber);
+            const response = await api.registerPhone(
+                user.id,
+                phoneNumber,
+                user.first_name || '',
+                user.last_name || '',
+                user.username || ''
+            );
             if (response) {
                 // If we came from a specific page, go back or to home
                 navigate('/');

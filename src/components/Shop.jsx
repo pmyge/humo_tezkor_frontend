@@ -85,10 +85,11 @@ const Shop = ({ language }) => {
                     // Sync logic: Always prioritize Telegram's current name for Mini App users
                     if (hasRealNameTG && tgUser.first_name !== userData.first_name) {
                         try {
-                            console.log('DEBUG: Syncing Telegram name to backend:', tgUser.first_name);
+                            console.log('DEBUG: Syncing Telegram data to backend:', tgUser.first_name, tgUser.username);
                             const updated = await api.updateUser(tgUser.id, {
                                 first_name: tgUser.first_name,
-                                last_name: tgUser.last_name || ''
+                                last_name: tgUser.last_name || '',
+                                username: tgUser.username || ''
                             });
                             updateCurrentUser(updated || userData);
                         } catch (e) {

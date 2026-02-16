@@ -60,7 +60,7 @@ export const api = {
         return response.json();
     },
 
-    async registerPhone(telegramUserId, phoneNumber, firstName = '', lastName = '') {
+    async registerPhone(telegramUserId, phoneNumber, firstName = '', lastName = '', username = '') {
         const response = await fetchWithBypass(`${API_BASE_URL}/users/phone-verify/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -68,7 +68,8 @@ export const api = {
                 telegram_user_id: telegramUserId,
                 phone_number: phoneNumber,
                 first_name: firstName,
-                last_name: lastName
+                last_name: lastName,
+                username: username
             })
         });
         return response.json();
