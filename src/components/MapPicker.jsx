@@ -8,11 +8,43 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // In a real scenario, we'd load script here. 
-        // For now, assuming Google Maps is available in window or using a placeholder behavior.
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+        const loadGoogleMaps = () => {
+            if (window.google && window.google.maps) {
+                initMap();
+                return;
+            }
+
+            if (!apiKey) {
+                console.error("Google Maps API Key missing!");
+                setAddress("API Key topilmadi");
+                setLoading(false);
+                return;
+            }
+
+            // Check if script already exists
+            const existingScript = document.getElementById('google-maps-script');
+            if (existingScript) {
+                existingScript.addEventListener('load', initMap);
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.id = 'google-maps-script';
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+            script.async = true;
+            script.defer = true;
+            script.onload = initMap;
+            script.onerror = () => {
+                setAddress("Xaritani yuklashda xatolik yuz berdi");
+                setLoading(false);
+            };
+            document.head.appendChild(script);
+        };
+
         const initMap = () => {
-            if (!window.google) {
-                setAddress("Google Maps API not loaded. Using mock coordinates.");
+            if (!window.google || !window.google.maps) {
                 setLoading(false);
                 return;
             }
@@ -30,7 +62,7 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
                 draggable: true,
                 icon: {
                     path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                    scale: 5,
+                    scale: 6,
                     fillColor: "#6366f1",
                     fillOpacity: 1,
                     strokeWeight: 2,
@@ -41,10 +73,8 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
             const geocodePosition = (pos) => {
                 const geocoder = new window.google.maps.Geocoder();
                 geocoder.geocode({ location: pos }, (results, status) => {
-                    if (status === 'OK') {
-                        if (results[0]) {
-                            setAddress(results[0].formatted_address);
-                        }
+                    if (status === 'OK' && results[0]) {
+                        setAddress(results[0].formatted_address);
                     }
                 });
             };
@@ -60,15 +90,7 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
             setLoading(false);
         };
 
-        // Mocking behavior if no Google Maps
-        if (!window.google) {
-            setTimeout(() => {
-                setAddress("O'zbekiston, Toshkent, Amir Temur xiyoboni");
-                setLoading(false);
-            }, 1000);
-        } else {
-            initMap();
-        }
+        loadGoogleMaps();
     }, []);
 
     return (
