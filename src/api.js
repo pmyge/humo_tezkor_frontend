@@ -1,24 +1,37 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://punyo-market-backend.onrender.com/api';
 
 const fetchWithBypass = async (url, options = {}) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     const headers = {
         ...options.headers,
         'bypass-tunnel-reminder': 'true',
     };
-    const response = await fetch(url, { ...options, headers });
-    if (!response.ok) {
-        let errorData;
-        try {
-            errorData = await response.json();
-        } catch (e) {
-            errorData = { detail: response.statusText };
+
+    try {
+        const response = await fetch(url, {
+            ...options,
+            headers,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`API Error (${response.status}):`, errorText);
+            throw new Error(`Server error: ${response.status}`);
         }
-        const error = new Error(errorData.detail || errorData.error || JSON.stringify(errorData) || `API error: ${response.status}`);
-        error.status = response.status;
-        error.data = errorData;
-        throw error;
+        return response;
+    } catch (err) {
+        clearTimeout(timeoutId);
+        if (err.name === 'AbortError') {
+            console.error('API Timeout:', url);
+            throw new Error('Connection timeout');
+        }
+        console.error('Fetch error:', err);
+        throw err;
     }
-    return response;
 };
 
 export const getImageUrl = (path) => {
