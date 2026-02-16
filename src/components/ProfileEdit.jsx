@@ -10,12 +10,17 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         setLoading(true);
         try {
             const userId = user.telegram_user_id || user.telegram_id;
+            console.log('DEBUG ProfileEdit: saving for user', userId, 'with name', name);
             const result = await api.updateUser(userId, { first_name: name });
+            console.log('DEBUG ProfileEdit: result received:', result);
             if (result) {
                 onSave(result);
+                // Also give immediate visual feedback
+                alert(language === 'ru' ? 'Изменения сохранены!' : 'O\'zgarishlar saqlandi!');
             }
         } catch (error) {
             console.error('Error updating profile:', error);
+            alert('Error: ' + error.message);
         } finally {
             setLoading(false);
         }
