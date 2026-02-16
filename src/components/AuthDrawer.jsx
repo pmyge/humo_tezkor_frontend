@@ -20,36 +20,28 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         setError('');
 
         try {
-            // Use telegram user ID if available, otherwise use a fallback for testing
+            // Use telegram user ID if available
+            const telegram = window.Telegram?.WebApp;
             const tgUser = telegram?.initDataUnsafe?.user;
-            const userId = tgUser?.id || 123456789; // Robust fallback ID for non-TG environments
+
+            console.log('DEBUG AuthDrawer: tgUser detected:', tgUser);
+
+            const userId = tgUser?.id || 123456789;
+            const firstName = tgUser?.first_name || '';
+            const lastName = tgUser?.last_name || '';
 
             const fullPhone = selectedCountry.code + phoneNumber;
-            try {
-                const response = await api.registerPhone(
-                    userId,
-                    fullPhone,
-                    tgUser?.first_name || '',
-                    tgUser?.last_name || ''
-                );
 
-                if (response) {
-                    onAuthenticated(response);
-                    onClose();
-                    return;
-                }
-            } catch (apiErr) {
-                console.warn('API registration failed, falling back to local session:', apiErr);
+            const response = await api.registerPhone(
+                userId,
+                fullPhone,
+                firstName,
+                lastName
+            );
 
-                const syntheticUser = {
-                    telegram_user_id: userId,
-                    phone_number: fullPhone,
-                    first_name: tgUser?.first_name || 'User',
-                    last_name: tgUser?.last_name || '',
-                    username: tgUser?.username || `user_${userId}`
-                };
-
-                onAuthenticated(syntheticUser);
+            if (response) {
+                console.log('DEBUG AuthDrawer: registration success:', response);
+                onAuthenticated(response);
                 onClose();
             }
         } catch (err) {
