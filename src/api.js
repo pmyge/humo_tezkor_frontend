@@ -1,11 +1,15 @@
-const API_BASE_URL = 'https://punyo-market-backend.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://punyo-market-backend.onrender.com/api';
 
 const fetchWithBypass = async (url, options = {}) => {
     const headers = {
         ...options.headers,
         'bypass-tunnel-reminder': 'true',
     };
-    return fetch(url, { ...options, headers });
+    const response = await fetch(url, { ...options, headers });
+    if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+    return response;
 };
 
 export const getImageUrl = (path) => {

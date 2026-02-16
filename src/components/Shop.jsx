@@ -58,6 +58,19 @@ const Shop = ({ language }) => {
             }
         } catch (error) {
             console.error('Auth check error:', error);
+            // If API fails, we still want to keep the current tgUser info if we have it
+            if (!currentUser) {
+                const telegram = window.Telegram?.WebApp;
+                const tgUser = telegram?.initDataUnsafe?.user;
+                if (tgUser) {
+                    setCurrentUser({
+                        telegram_user_id: tgUser.id,
+                        first_name: tgUser.first_name,
+                        last_name: tgUser.last_name,
+                        username: tgUser.username
+                    });
+                }
+            }
         }
     };
 
