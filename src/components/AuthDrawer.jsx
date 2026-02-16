@@ -26,7 +26,8 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
 
             console.log('DEBUG AuthDrawer: tgUser detected:', tgUser);
 
-            const userId = tgUser?.id || 12345678;
+            // Fallback ID for testing outside Telegram (using phone digits to ensure uniqueness)
+            const userId = tgUser?.id || parseInt(phoneNumber.replace(/[^0-9]/g, '')) || 12345678;
             const firstName = tgUser?.first_name || '';
             const lastName = tgUser?.last_name || '';
 
