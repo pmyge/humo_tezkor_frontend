@@ -68,15 +68,26 @@ const Shop = ({ language }) => {
                     const saved = localStorage.getItem('punyo_user');
                     const localUser = saved ? JSON.parse(saved) : {};
 
-                    // Sync logic: Only sync from TG if BOTH backend and local names are default/empty
-                    const hasRealNameBackend = userData.first_name && userData.first_name !== 'Admin' && userData.first_name !== 'User';
-                    const hasRealNameLocal = localUser.first_name && localUser.first_name !== 'Admin' && localUser.first_name !== 'User';
+                    // Define what we consider "default" or "not real" names
+                    const isDefaultName = (name) => {
+                        if (!name) return true;
+                        const defaults = ['Admin', 'User', 'Mehmon', 'Гость'];
+                        return defaults.includes(name);
+                    };
 
-                    if (!hasRealNameBackend && !hasRealNameLocal && tgUser.first_name) {
+                    const hasRealNameBackend = !isDefaultName(userData.first_name);
+                    const hasRealNameLocal = !isDefaultName(localUser.first_name);
+                    const hasRealNameTG = !isDefaultName(tgUser.first_name);
+
+                    // Sync logic: If backend is default but TG or Local has a real name, push it to backend
+                    if (!hasRealNameBackend && (hasRealNameTG || hasRealNameLocal)) {
+                        const nameToPush = hasRealNameTG ? tgUser.first_name : localUser.first_name;
+                        const lastNameToPush = hasRealNameTG ? (tgUser.last_name || '') : (localUser.last_name || '');
+
                         try {
                             const updated = await api.updateUser(tgUser.id, {
-                                first_name: tgUser.first_name,
-                                last_name: tgUser.last_name || ''
+                                first_name: nameToPush,
+                                last_name: lastNameToPush
                             });
                             updateCurrentUser(updated || userData);
                         } catch (e) {
