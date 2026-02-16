@@ -1,7 +1,7 @@
 import { getImageUrl } from '../api';
 import './ProductGrid.css';
 
-export default function ProductGrid({ products, language, favorites = [], onToggleFavorite }) {
+export default function ProductGrid({ products, language, favorites = [], onToggleFavorite, onProductClick }) {
     if (products.length === 0) {
         return <div className="no-products">
             {language === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}
@@ -13,7 +13,7 @@ export default function ProductGrid({ products, language, favorites = [], onTogg
             {products.map(product => {
                 const isFavorite = favorites.includes(product.id);
                 return (
-                    <div key={product.id} className="product-card">
+                    <div key={product.id} className="product-card" onClick={() => onProductClick && onProductClick(product)}>
                         <div className="product-image">
                             <button
                                 className={`favorite-btn ${isFavorite ? 'active' : ''}`}

@@ -6,6 +6,7 @@ import CategorySection from './CategorySection';
 import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
 import ProfileEdit from './ProfileEdit';
+import ProductDetail from './ProductDetail';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
@@ -18,9 +19,10 @@ const Shop = ({ language }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products', 'profile'
+    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products', 'profile', 'favorites'
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [currentUser, setCurrentUser] = useState(() => {
         const saved = localStorage.getItem('punyo_user');
         return saved ? JSON.parse(saved) : null;
@@ -147,6 +149,7 @@ const Shop = ({ language }) => {
             }
         } else if (id === 'favorites') {
             setSelectedCategory(null);
+            setSelectedProduct(null);
             setView('favorites');
         }
     };
@@ -181,6 +184,18 @@ const Shop = ({ language }) => {
     }
 
     const renderContent = () => {
+        if (selectedProduct) {
+            return (
+                <ProductDetail
+                    product={selectedProduct}
+                    language={language}
+                    onBack={() => setSelectedProduct(null)}
+                    favorites={favorites}
+                    onToggleFavorite={toggleFavorite}
+                />
+            );
+        }
+
         if (searchQuery) {
             return (
                 <div className="search-results">
@@ -192,6 +207,7 @@ const Shop = ({ language }) => {
                         language={language}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
+                        onProductClick={setSelectedProduct}
                     />
                 </div>
             );
@@ -259,6 +275,7 @@ const Shop = ({ language }) => {
                         language={language}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
+                        onProductClick={setSelectedProduct}
                     />
                 </div>
             );
@@ -284,6 +301,7 @@ const Shop = ({ language }) => {
                             onSelectCategory={setSelectedCategory}
                             favorites={favorites}
                             onToggleFavorite={toggleFavorite}
+                            onProductClick={setSelectedProduct}
                         />
                     ))}
                 </div>

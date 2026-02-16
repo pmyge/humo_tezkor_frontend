@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api, getImageUrl } from '../api';
 import './CategorySection.css';
 
-export default function CategorySection({ category, onSelectCategory, language, favorites = [], onToggleFavorite }) {
+export default function CategorySection({ category, onSelectCategory, language, favorites = [], onToggleFavorite, onProductClick }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ export default function CategorySection({ category, onSelectCategory, language, 
                 {products.map(product => {
                     const isFavorite = favorites.includes(product.id);
                     return (
-                        <div key={product.id} className="horizontal-product-card">
+                        <div key={product.id} className="horizontal-product-card" onClick={() => onProductClick && onProductClick(product)}>
                             <div className="product-image">
                                 <button
                                     className={`favorite-btn ${isFavorite ? 'active' : ''}`}
