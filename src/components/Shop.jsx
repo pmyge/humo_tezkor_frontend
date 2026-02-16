@@ -51,6 +51,9 @@ const Shop = ({ language }) => {
                     } else {
                         setCurrentUser(userData);
                     }
+                } else if (userData) {
+                    // Still set current user if found, even if no phone yet
+                    setCurrentUser(userData);
                 }
             }
         } catch (error) {
@@ -69,7 +72,7 @@ const Shop = ({ language }) => {
 
     const handleSidebarItemClick = (id) => {
         if (id === 'profile') {
-            if (currentUser) {
+            if (currentUser && currentUser.phone_number) {
                 setView('profile');
             } else {
                 setIsAuthDrawerOpen(true);

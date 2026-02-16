@@ -19,6 +19,7 @@ const RouteGuard = ({ children }) => {
                     const userInfo = await api.getUserInfo(userId);
                     // If user not found or no phone, and not already on registration page
                     if ((!userInfo || !userInfo.phone_number) && location.pathname !== '/registration') {
+                        // Only navigate to registration if definitely missing phone and not already there
                         navigate('/registration');
                     }
                     if (userInfo?.language) {
