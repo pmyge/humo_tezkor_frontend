@@ -35,6 +35,9 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
 
             <div className="profile-form">
                 <div className="profile-input-group">
+                    <label className="input-label">
+                        {language === 'ru' ? 'Номер телефона' : 'Telefon raqami'}
+                    </label>
                     <input
                         type="text"
                         value={user?.phone_number || ''}
@@ -44,13 +47,21 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                 </div>
 
                 <div className="profile-input-group">
+                    <label className="input-label">
+                        {language === 'ru' ? 'Ваше имя' : 'Sizning ismingiz'}
+                    </label>
                     <input
                         type="text"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        disabled
                         placeholder={language === 'ru' ? 'Имя' : 'Ism'}
-                        className="profile-input"
+                        className="profile-input disabled"
                     />
+                    <p className="input-hint">
+                        {language === 'ru'
+                            ? 'Имя синхронизируется с вашим профилем Telegram'
+                            : 'Ism Telegram profilingizdan avtomatik olingan'}
+                    </p>
                 </div>
 
                 <button
