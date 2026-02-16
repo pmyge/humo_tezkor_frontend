@@ -25,15 +25,31 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
             const userId = tgUser?.id || 123456789; // Robust fallback ID for non-TG environments
 
             const fullPhone = selectedCountry.code + phoneNumber;
-            const response = await api.registerPhone(
-                userId,
-                fullPhone,
-                tgUser?.first_name || '',
-                tgUser?.last_name || ''
-            );
+            try {
+                const response = await api.registerPhone(
+                    userId,
+                    fullPhone,
+                    tgUser?.first_name || '',
+                    tgUser?.last_name || ''
+                );
 
-            if (response) {
-                onAuthenticated(response);
+                if (response) {
+                    onAuthenticated(response);
+                    onClose();
+                    return;
+                }
+            } catch (apiErr) {
+                console.warn('API registration failed, falling back to local session:', apiErr);
+
+                const syntheticUser = {
+                    telegram_user_id: userId,
+                    phone_number: fullPhone,
+                    first_name: tgUser?.first_name || 'User',
+                    last_name: tgUser?.last_name || '',
+                    username: tgUser?.username || `user_${userId}`
+                };
+
+                onAuthenticated(syntheticUser);
                 onClose();
             }
         } catch (err) {

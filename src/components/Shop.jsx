@@ -21,7 +21,19 @@ const Shop = ({ language }) => {
     const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products', 'profile'
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(() => {
+        const saved = localStorage.getItem('punyo_user');
+        return saved ? JSON.parse(saved) : null;
+    });
+
+    const updateCurrentUser = (user) => {
+        if (user) {
+            localStorage.setItem('punyo_user', JSON.stringify(user));
+        } else {
+            localStorage.removeItem('punyo_user');
+        }
+        setCurrentUser(user);
+    };
 
     useEffect(() => {
         loadCategories();
@@ -43,17 +55,17 @@ const Shop = ({ language }) => {
                                 first_name: realName,
                                 last_name: tgUser.last_name || ''
                             });
-                            setCurrentUser(updated || userData);
+                            updateCurrentUser(updated || userData);
                         } catch (e) {
                             console.error('Name sync failed:', e);
-                            setCurrentUser(userData);
+                            updateCurrentUser(userData);
                         }
                     } else {
-                        setCurrentUser(userData);
+                        updateCurrentUser(userData);
                     }
                 } else if (userData) {
                     // Still set current user if found, even if no phone yet
-                    setCurrentUser(userData);
+                    updateCurrentUser(userData);
                 }
             }
         } catch (error) {
@@ -63,7 +75,7 @@ const Shop = ({ language }) => {
                 const telegram = window.Telegram?.WebApp;
                 const tgUser = telegram?.initDataUnsafe?.user;
                 if (tgUser) {
-                    setCurrentUser({
+                    updateCurrentUser({
                         telegram_user_id: tgUser.id,
                         first_name: tgUser.first_name,
                         last_name: tgUser.last_name,
@@ -176,7 +188,7 @@ const Shop = ({ language }) => {
                     language={language}
                     onBack={() => setView('home')}
                     onSave={(updated) => {
-                        setCurrentUser(updated);
+                        updateCurrentUser(updated);
                         setView('home');
                     }}
                 />
@@ -234,7 +246,7 @@ const Shop = ({ language }) => {
                 onClose={() => setIsAuthDrawerOpen(false)}
                 language={language}
                 onAuthenticated={(user) => {
-                    setCurrentUser(user);
+                    updateCurrentUser(user);
                     setView('profile');
                 }}
             />
