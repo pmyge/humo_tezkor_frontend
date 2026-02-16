@@ -61,6 +61,8 @@
 .horizontal-product-card .product-image {
     width: 100%;
     aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
 }
 
 .horizontal-product-card .product-info {

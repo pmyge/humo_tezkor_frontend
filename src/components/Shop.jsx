@@ -25,6 +25,10 @@ const Shop = ({ language }) => {
         const saved = localStorage.getItem('punyo_user');
         return saved ? JSON.parse(saved) : null;
     });
+    const [favorites, setFavorites] = useState(() => {
+        const saved = localStorage.getItem('punyo_favorites');
+        return saved ? JSON.parse(saved) : [];
+    });
 
     const updateCurrentUser = (user) => {
         if (user) {
@@ -125,6 +129,15 @@ const Shop = ({ language }) => {
         }
     }, [selectedCategory]);
 
+    const toggleFavorite = (productId) => {
+        const newFavorites = favorites.includes(productId)
+            ? favorites.filter(id => id !== productId)
+            : [...favorites, productId];
+
+        setFavorites(newFavorites);
+        localStorage.setItem('punyo_favorites', JSON.stringify(newFavorites));
+    };
+
     const handleSidebarItemClick = (id) => {
         if (id === 'profile') {
             if (currentUser && currentUser.phone_number) {
@@ -132,6 +145,9 @@ const Shop = ({ language }) => {
             } else {
                 setIsAuthDrawerOpen(true);
             }
+        } else if (id === 'favorites') {
+            setSelectedCategory(null);
+            setView('favorites');
         }
     };
 
@@ -171,7 +187,12 @@ const Shop = ({ language }) => {
                     <div className="category-title">
                         {language === 'ru' ? 'РЕЗУЛЬТАТЫ ПОИСКА' : 'QIDIRUV NATIJALARI'}
                     </div>
-                    <ProductGrid products={filteredProducts} language={language} />
+                    <ProductGrid
+                        products={filteredProducts}
+                        language={language}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                    />
                 </div>
             );
         }
@@ -225,6 +246,24 @@ const Shop = ({ language }) => {
             );
         }
 
+        if (view === 'favorites') {
+            const favoriteProducts = allProducts.filter(p => favorites.includes(p.id));
+            return (
+                <div className="favorites-view">
+                    <div className="category-title">
+                        <span className="back-btn" onClick={() => setView('home')}>←</span>
+                        {language === 'ru' ? 'ИЗБРАННОЕ' : 'SEVIMLIKLAR'}
+                    </div>
+                    <ProductGrid
+                        products={favoriteProducts}
+                        language={language}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                    />
+                </div>
+            );
+        }
+
         // Default: Home View
         return (
             <div className="home-content">
@@ -243,6 +282,8 @@ const Shop = ({ language }) => {
                             category={category}
                             language={language}
                             onSelectCategory={setSelectedCategory}
+                            favorites={favorites}
+                            onToggleFavorite={toggleFavorite}
                         />
                     ))}
                 </div>

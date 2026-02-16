@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api, getImageUrl } from '../api';
 import './CategorySection.css';
 
-export default function CategorySection({ category, onSelectCategory, language }) {
+export default function CategorySection({ category, onSelectCategory, language, favorites = [], onToggleFavorite }) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,23 +34,35 @@ export default function CategorySection({ category, onSelectCategory, language }
             </div>
 
             <div className="horizontal-product-scroll">
-                {products.map(product => (
-                    <div key={product.id} className="horizontal-product-card" onClick={() => {/* Future product detail click */ }}>
-                        <div className="product-image">
-                            {product.image ? (
-                                <img src={getImageUrl(product.image)} alt={product.name} />
-                            ) : (
-                                <div className="placeholder-image">🖼️</div>
-                            )}
+                {products.map(product => {
+                    const isFavorite = favorites.includes(product.id);
+                    return (
+                        <div key={product.id} className="horizontal-product-card">
+                            <div className="product-image">
+                                <button
+                                    className={`favorite-btn ${isFavorite ? 'active' : ''}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onToggleFavorite(product.id);
+                                    }}
+                                >
+                                    {isFavorite ? '❤️' : '🤍'}
+                                </button>
+                                {product.image ? (
+                                    <img src={getImageUrl(product.image)} alt={product.name} />
+                                ) : (
+                                    <div className="placeholder-image">🖼️</div>
+                                )}
+                            </div>
+                            <div className="product-info">
+                                <h3 className="product-name">
+                                    {language === 'ru' ? (product.name_ru || product.name) : product.name}
+                                </h3>
+                                <p className="product-price">{product.price.toLocaleString()} UZS</p>
+                            </div>
                         </div>
-                        <div className="product-info">
-                            <h3 className="product-name">
-                                {language === 'ru' ? (product.name_ru || product.name) : product.name}
-                            </h3>
-                            <p className="product-price">{product.price.toLocaleString()} UZS</p>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
 
                 {products.length >= 15 && (
                     <div className="view-more-card" onClick={() => onSelectCategory(category)}>
