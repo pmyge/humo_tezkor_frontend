@@ -1,7 +1,7 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) => {
+const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user }) => {
     const menuItems = [
         { id: 'profile', icon: '👤', label: language === 'ru' ? 'Личные данные' : "Shaxsiy ma'lumotlarim" },
         { id: 'orders', icon: '📋', label: language === 'ru' ? 'Мои заказы' : 'Buyurtmalarim' },
@@ -16,10 +16,17 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick }) =
             <div className={`sidebar-overlay ${isOpen ? 'show' : ''}`} onClick={onClose}></div>
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <div className="sidebar-logo">
-                        <div className="logo-icon">H</div>
-                        <div className="logo-text">
-                            <span className="brand-name">HUMO MARKET</span>
+                    <div className="sidebar-user-header">
+                        <div className="user-avatar">
+                            {user?.first_name ? user.first_name[0].toUpperCase() : '👤'}
+                        </div>
+                        <div className="user-info">
+                            <div className="user-name">
+                                {user?.first_name || (language === 'ru' ? 'Гость' : 'Mehmon')}
+                            </div>
+                            {user?.phone_number && (
+                                <div className="user-phone">{user.phone_number}</div>
+                            )}
                         </div>
                     </div>
                 </div>

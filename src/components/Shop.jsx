@@ -28,11 +28,22 @@ const Shop = ({ language }) => {
 
     const updateCurrentUser = (user) => {
         if (user) {
-            localStorage.setItem('punyo_user', JSON.stringify(user));
+            const saved = localStorage.getItem('punyo_user');
+            const current = saved ? JSON.parse(saved) : {};
+            // Prefer name from 'user' if it's not empty, otherwise keep current
+            const merged = { ...current, ...user };
+
+            // Special handling: if backend name is 'Admin' or empty, but we have a name locally, keep it.
+            if ((!user.first_name || user.first_name === 'Admin') && current.first_name && current.first_name !== 'Admin') {
+                merged.first_name = current.first_name;
+            }
+
+            localStorage.setItem('punyo_user', JSON.stringify(merged));
+            setCurrentUser(merged);
         } else {
             localStorage.removeItem('punyo_user');
+            setCurrentUser(null);
         }
-        setCurrentUser(user);
     };
 
     useEffect(() => {
@@ -46,13 +57,18 @@ const Shop = ({ language }) => {
             const tgUser = telegram?.initDataUnsafe?.user;
             if (tgUser) {
                 const userData = await api.getUserInfo(tgUser.id);
-                if (userData && userData.phone_number) {
-                    // Force sync name from Telegram if it's Admin or empty
-                    const realName = tgUser.first_name || '';
-                    if ((!userData.first_name || userData.first_name === 'Admin') && realName) {
+                if (userData) {
+                    const saved = localStorage.getItem('punyo_user');
+                    const localUser = saved ? JSON.parse(saved) : {};
+
+                    // Sync logic: Only sync from TG if BOTH backend and local names are default/empty
+                    const hasRealNameBackend = userData.first_name && userData.first_name !== 'Admin' && userData.first_name !== 'User';
+                    const hasRealNameLocal = localUser.first_name && localUser.first_name !== 'Admin' && localUser.first_name !== 'User';
+
+                    if (!hasRealNameBackend && !hasRealNameLocal && tgUser.first_name) {
                         try {
                             const updated = await api.updateUser(tgUser.id, {
-                                first_name: realName,
+                                first_name: tgUser.first_name,
                                 last_name: tgUser.last_name || ''
                             });
                             updateCurrentUser(updated || userData);
@@ -63,17 +79,13 @@ const Shop = ({ language }) => {
                     } else {
                         updateCurrentUser(userData);
                     }
-                } else if (userData) {
-                    // Still set current user if found, even if no phone yet
-                    updateCurrentUser(userData);
                 }
             }
         } catch (error) {
             console.error('Auth check error:', error);
-            // If API fails, we still want to keep the current tgUser info if we have it
+            // On failure, updateCurrentUser will already use what's in localStorage
             if (!currentUser) {
-                const telegram = window.Telegram?.WebApp;
-                const tgUser = telegram?.initDataUnsafe?.user;
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 if (tgUser) {
                     updateCurrentUser({
                         telegram_user_id: tgUser.id,
@@ -239,6 +251,7 @@ const Shop = ({ language }) => {
                     }
                 }}
                 onItemClick={handleSidebarItemClick}
+                user={currentUser}
             />
 
             <AuthDrawer
