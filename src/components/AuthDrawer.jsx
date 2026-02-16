@@ -26,7 +26,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
 
             console.log('DEBUG AuthDrawer: tgUser detected:', tgUser);
 
-            const userId = tgUser?.id || 123456789;
+            const userId = tgUser?.id || 12345678;
             const firstName = tgUser?.first_name || '';
             const lastName = tgUser?.last_name || '';
 
