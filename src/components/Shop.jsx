@@ -30,11 +30,18 @@ const Shop = ({ language }) => {
         if (user) {
             const saved = localStorage.getItem('punyo_user');
             const current = saved ? JSON.parse(saved) : {};
-            // Prefer name from 'user' if it's not empty, otherwise keep current
+
+            // Define what we consider "default" or "not real" names
+            const isDefaultName = (name) => {
+                if (!name) return true;
+                const defaults = ['Admin', 'User', 'Mehmon', 'Гость'];
+                return defaults.includes(name);
+            };
+
             const merged = { ...current, ...user };
 
-            // Special handling: if backend name is 'Admin' or empty, but we have a name locally, keep it.
-            if ((!user.first_name || user.first_name === 'Admin') && current.first_name && current.first_name !== 'Admin') {
+            // Protect manual name: if incoming is default but local is real, keep local
+            if (isDefaultName(user.first_name) && !isDefaultName(current.first_name)) {
                 merged.first_name = current.first_name;
             }
 
