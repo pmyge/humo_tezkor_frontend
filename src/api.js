@@ -7,7 +7,16 @@ const fetchWithBypass = async (url, options = {}) => {
     };
     const response = await fetch(url, { ...options, headers });
     if (!response.ok) {
-        throw new Error(`API error: ${response.status} ${response.statusText}`);
+        let errorData;
+        try {
+            errorData = await response.json();
+        } catch (e) {
+            errorData = { detail: response.statusText };
+        }
+        const error = new Error(errorData.detail || errorData.error || JSON.stringify(errorData) || `API error: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
     }
     return response;
 };

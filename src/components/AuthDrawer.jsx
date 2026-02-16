@@ -38,7 +38,8 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
             }
         } catch (err) {
             console.error('Registration error:', err);
-            setError(language === 'ru' ? 'Произошла ошибка' : 'Xatolik yuz berdi');
+            const msg = err.message || (language === 'ru' ? 'Произошла ошибка' : 'Xatolik yuz berdi');
+            setError(msg);
         } finally {
             setLoading(false);
         }
