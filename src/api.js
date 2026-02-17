@@ -4,15 +4,9 @@ const fetchWithBypass = async (url, options = {}) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-    const headers = {
-        ...options.headers,
-        'bypass-tunnel-reminder': 'true',
-    };
-
     try {
         const response = await fetch(url, {
             ...options,
-            headers,
             signal: controller.signal
         });
         clearTimeout(timeoutId);
