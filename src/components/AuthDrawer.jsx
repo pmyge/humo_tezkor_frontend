@@ -11,7 +11,40 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
     const [error, setError] = useState('');
     const telegram = window.Telegram?.WebApp;
 
-    // ... (keep extractUserId as is)
+    const extractUserId = () => {
+        // Priority 1: Telegram WebApp User object
+        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (tgUser?.id) return tgUser.id;
+
+        // Priority 2: URL Query Parameter 'tid'
+        const urlParams = new URLSearchParams(window.location.search);
+        const tid = urlParams.get('tid');
+        if (tid && parseInt(tid) > 0) return parseInt(tid);
+
+        // Priority 3: Manual parse of initData from URL hash
+        try {
+            const hash = window.location.hash.slice(1);
+            const hashParams = new URLSearchParams(hash);
+            const tgWebAppData = hashParams.get('tgWebAppData');
+            const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
+            const userRaw = source.get('user');
+            if (userRaw) {
+                const parsed = JSON.parse(userRaw);
+                if (parsed.id) return parsed.id;
+            }
+            const tidHash = source.get('tid');
+            if (tidHash && parseInt(tidHash) > 0) return parseInt(tidHash);
+        } catch (e) { }
+
+        // Priority 4: localStorage
+        const saved = localStorage.getItem('punyo_user');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.telegram_user_id) return data.telegram_user_id;
+        }
+
+        return 0;
+    };
 
     const handleContinue = async () => {
         if (!userName.trim()) {
