@@ -40,21 +40,9 @@ const RouteGuard = ({ children }) => {
 
 function App() {
     const [language, setLanguage] = React.useState('uz');
-    const [isTelegram, setIsTelegram] = React.useState(true);
     const telegram = window.Telegram?.WebApp;
 
     useEffect(() => {
-        // Environment check: Must have initData from Telegram
-        const isTgEnv = !!telegram?.initData;
-
-        // On localhost/127.0.0.1, we allow browser access for development
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-        if (!isTgEnv && !isLocal) {
-            setIsTelegram(false);
-            return;
-        }
-
         if (telegram) {
             telegram.ready();
             telegram.expand();
@@ -77,25 +65,6 @@ function App() {
         window.addEventListener('langChange', handleLangChange);
         return () => window.removeEventListener('langChange', handleLangChange);
     }, [telegram]);
-
-    if (!isTelegram) {
-        return (
-            <div className="telegram-only-error">
-                <div className="error-content">
-                    <div className="error-icon">🤖</div>
-                    <h1>{language === 'uz' ? 'Ilova faqat Telegram ichida ishlaydi' : 'Приложение работает только внутри Telegram'}</h1>
-                    <p>
-                        {language === 'uz'
-                            ? 'Iltimos, do\'konga kirish uchun @punyo_market_bot botidan foydalaning.'
-                            : 'Пожалуйста, используйте бот @punyo_market_bot для доступа к магазину.'}
-                    </p>
-                    <a href="https://t.me/punyo_market_bot" className="open-bot-btn">
-                        {language === 'uz' ? 'Botni ochish' : 'Открыть бот'}
-                    </a>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <Router>
