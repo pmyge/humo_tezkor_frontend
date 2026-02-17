@@ -45,20 +45,18 @@ const Shop = ({ language }) => {
     const [showCartSuccess, setShowCartSuccess] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const updateCurrentUser = (user) => {
+    const updateCurrentUser = (user, source = 'local') => {
         if (user) {
             const saved = localStorage.getItem('punyo_user');
             const current = saved ? JSON.parse(saved) : {};
 
-            // If the incoming user object has real data (from backend), it should dominate.
-            // Merge logic: new data wins for all shared keys.
-            const merged = { ...current, ...user };
+            // If the source is 'backend', we prioritize its fields and clear stale ones.
+            // But we keep some local-only state if we had any (though currently it's all backend-synced).
+            const merged = source === 'backend'
+                ? { ...user } // Full trust on backend
+                : { ...current, ...user };
 
-            // Specifically for names: if backend returns a default name but we have a real one locally, 
-            // maybe we want to keep it? The user said "name qismi Ergashboy bo'lishi kerak", 
-            // which is a real name from Telegram/Backend. 
-            // So we just trust the incoming 'user' object if it comes from an API call result.
-
+            console.log(`DEBUG updateCurrentUser (source: ${source}):`, merged);
             localStorage.setItem('punyo_user', JSON.stringify(merged));
             setCurrentUser(merged);
         } else {
@@ -76,17 +74,17 @@ const Shop = ({ language }) => {
         try {
             const telegram = window.Telegram?.WebApp;
             const tgUser = telegram?.initDataUnsafe?.user;
+
+            console.log('DEBUG: Telegram WebApp User:', tgUser);
+
             if (tgUser) {
                 const userData = await api.getUserInfo(tgUser.id);
                 if (userData) {
-                    console.log('DEBUG: Backend user data fetched', userData);
-                    // Force update local data with backend data to clear stale "Hffuf" or old phones
-                    updateCurrentUser(userData);
+                    console.log('DEBUG: Backend user data fetched:', userData);
+                    // Force update local data with backend data to clear stale fields
+                    updateCurrentUser(userData, 'backend');
 
-                    const saved = localStorage.getItem('punyo_user');
-                    const localUser = saved ? JSON.parse(saved) : {};
-
-                    // Sync logic for name changes in Telegram
+                    // If backend name is different from current TG name, sync it
                     if (tgUser.first_name && tgUser.first_name !== userData.first_name) {
                         try {
                             const updated = await api.updateUser(tgUser.id, {
@@ -94,27 +92,23 @@ const Shop = ({ language }) => {
                                 last_name: tgUser.last_name || '',
                                 username: tgUser.username || ''
                             });
-                            updateCurrentUser(updated || userData);
+                            if (updated) updateCurrentUser(updated, 'backend');
                         } catch (e) {
                             console.error('Name sync failed:', e);
                         }
                     }
-                }
-            }
-        } catch (error) {
-            console.error('Auth check error:', error);
-            // On failure, updateCurrentUser will already use what's in localStorage
-            if (!currentUser) {
-                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                if (tgUser) {
+                } else {
+                    // Failover to Telegram info if backend has nothing
                     updateCurrentUser({
                         telegram_user_id: tgUser.id,
                         first_name: tgUser.first_name,
                         last_name: tgUser.last_name,
                         username: tgUser.username
-                    });
+                    }, 'telegram');
                 }
             }
+        } catch (error) {
+            console.error('Auth check error:', error);
         }
     };
 
