@@ -211,8 +211,14 @@ const Shop = ({ language }) => {
     };
 
     const handleManualLocation = (data) => {
-        setSelectedLocation(data);
-        localStorage.setItem('punyo_location', JSON.stringify(data));
+        // data from Leaflet is { lat, lng, address }
+        const normalizedLocation = {
+            latitude: data.lat,
+            longitude: data.lng,
+            address: data.address
+        };
+        setSelectedLocation(normalizedLocation);
+        localStorage.setItem('punyo_location', JSON.stringify(normalizedLocation));
         setShowMapPicker(false);
     };
 

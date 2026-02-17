@@ -106,6 +106,15 @@ export const api = {
             })
         });
         return response.json();
+    },
+
+    async createOrder(orderData) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/orders/create/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+        return response.json();
     }
 }
 
