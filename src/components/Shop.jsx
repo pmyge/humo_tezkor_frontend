@@ -210,10 +210,13 @@ const Shop = ({ language }) => {
     };
 
     const submitFullOrder = async (providedLocation = null) => {
-        const locationToUse = providedLocation || selectedLocation;
+        // Fix: If this is called from an onClick event, providedLocation will be the Event object.
+        // We only want to use it if it's a real location object with latitude.
+        const locationToUse = (providedLocation && providedLocation.latitude) ? providedLocation : selectedLocation;
 
         // 1. Check for Phone Number first
         if (!currentUser?.phone_number) {
+            console.log('DEBUG: No phone number, opening AuthDrawer');
             setIsCheckingOut(true);
             setIsAuthDrawerOpen(true);
             return;
@@ -221,6 +224,7 @@ const Shop = ({ language }) => {
 
         // 2. Check for Location next
         if (!locationToUse) {
+            console.log('DEBUG: No location, opening LocationPicker');
             setIsCheckingOut(true);
             setShowLocationPicker(true);
             return;
@@ -246,7 +250,7 @@ const Shop = ({ language }) => {
             }
         } catch (error) {
             console.error('Order submit error:', error);
-            alert('Xatolik yuz berdi');
+            alert(language === 'ru' ? 'Произошла ошибка' : 'Xatolik yuz berdi');
         } finally {
             setIsSubmittingOrder(false);
         }
@@ -453,9 +457,9 @@ const Shop = ({ language }) => {
                 language={language}
                 onAuthenticated={(user) => {
                     updateCurrentUser(user);
+                    setIsAuthDrawerOpen(false); // Always close drawer first
                     if (isCheckingOut) {
                         // Phone registered, now move to location step
-                        setIsAuthDrawerOpen(false); // Close auth drawer
                         setShowLocationPicker(true);
                     } else {
                         setView('profile');

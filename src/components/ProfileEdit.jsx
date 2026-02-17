@@ -60,7 +60,7 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                 >
                     {loading
                         ? (language === 'ru' ? 'Сохранение...' : 'Saqlanmoqda...')
-                        : (language === 'ru' ? 'O\'zgarishlarni saqlash' : 'O\'zgarishlarni saqlash')}
+                        : (language === 'ru' ? 'Saqlash' : 'Saqlash')}
                 </button>
             </div>
 
