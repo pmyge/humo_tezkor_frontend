@@ -70,11 +70,18 @@ export const api = {
     },
 
     // Orders
-    async getOrders(telegramUserId, activeOnly = false) {
-        const url = activeOnly
-            ? `${API_BASE_URL}/orders/active/?telegram_user_id=${telegramUserId}`
-            : `${API_BASE_URL}/orders/?telegram_user_id=${telegramUserId}`;
-        const response = await fetchWithBypass(url);
+    async getOrders(telegramUserId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/orders/?telegram_user_id=${telegramUserId}`);
+        return response.json();
+    },
+
+    async getActiveOrders(telegramUserId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/orders/active/?telegram_user_id=${telegramUserId}`);
+        return response.json();
+    },
+
+    async getConfirmedOrders(telegramUserId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/orders/confirmed/?telegram_user_id=${telegramUserId}`);
         return response.json();
     },
 

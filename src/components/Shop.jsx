@@ -5,6 +5,7 @@ import SearchBar from './SearchBar';
 import CategorySection from './CategorySection';
 import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
+import MyOrders from './MyOrders';
 import ProfileEdit from './ProfileEdit';
 import ProductDetail from './ProductDetail';
 import LocationPicker from './LocationPicker';
@@ -233,6 +234,10 @@ const Shop = ({ language }) => {
                     setSelectedLocation(loc);
                     localStorage.setItem('punyo_location', JSON.stringify(loc));
                     setShowLocationPicker(false);
+                    if (isCheckingOut) {
+                        setIsCheckingOut(false);
+                        submitFullOrder(loc);
+                    }
                 }
             });
         } else {
@@ -247,7 +252,6 @@ const Shop = ({ language }) => {
                 setShowLocationPicker(false);
                 if (isCheckingOut) {
                     setIsCheckingOut(false);
-                    // We need to wait for state to update or pass the location directly
                     submitFullOrder(loc);
                 }
             }, () => {
@@ -329,6 +333,16 @@ const Shop = ({ language }) => {
                 setView('profile');
             } else {
                 console.log('DEBUG: User profile incomplete, opening AuthDrawer from Sidebar');
+                setIsAuthDrawerOpen(true);
+            }
+        } else if (id === 'orders') {
+            const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '' && currentUser.phone_number !== '-';
+            if (hasPhone) {
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                setView('my_orders');
+            } else {
+                console.log('DEBUG: User profile incomplete, opening AuthDrawer for Orders');
                 setIsAuthDrawerOpen(true);
             }
         } else if (id === 'favorites') {
@@ -447,6 +461,16 @@ const Shop = ({ language }) => {
                         }
                         setView('home');
                     }}
+                />
+            );
+        }
+
+        if (view === 'my_orders' && currentUser) {
+            return (
+                <MyOrders
+                    user={currentUser}
+                    language={language}
+                    onBack={() => setView('home')}
                 />
             );
         }
