@@ -50,8 +50,12 @@ const Shop = ({ language }) => {
             const saved = localStorage.getItem('punyo_user');
             const current = saved ? JSON.parse(saved) : {};
 
+            // Clean data: if phone_number is "-" or null, treat as empty string
+            if (user.phone_number === '-' || user.phone_number === null) {
+                user.phone_number = '';
+            }
+
             // If the source is 'backend', we prioritize its fields and clear stale ones.
-            // But we keep some local-only state if we had any (though currently it's all backend-synced).
             const merged = source === 'backend'
                 ? { ...user } // Full trust on backend
                 : { ...current, ...user };
@@ -211,20 +215,22 @@ const Shop = ({ language }) => {
 
     const submitFullOrder = async (providedLocation = null) => {
         // Fix: If this is called from an onClick event, providedLocation will be the Event object.
-        // We only want to use it if it's a real location object with latitude.
         const locationToUse = (providedLocation && providedLocation.latitude) ? providedLocation : selectedLocation;
 
         // 1. Check for Phone Number first
-        if (!currentUser?.phone_number) {
-            console.log('DEBUG: No phone number, opening AuthDrawer');
+        // We consider it missing if it's null, empty, or just a dash "-"
+        const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '-';
+
+        if (!hasPhone) {
+            console.log('DEBUG: No valid phone number, opening AuthDrawer');
             setIsCheckingOut(true);
             setIsAuthDrawerOpen(true);
             return;
         }
 
         // 2. Check for Location next
-        if (!locationToUse) {
-            console.log('DEBUG: No location, opening LocationPicker');
+        if (!locationToUse || !locationToUse.latitude) {
+            console.log('DEBUG: No valid location, opening LocationPicker');
             setIsCheckingOut(true);
             setShowLocationPicker(true);
             return;
