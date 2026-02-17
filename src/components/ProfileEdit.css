@@ -63,12 +63,23 @@
     cursor: not-allowed;
 }
 
+.profile-edit-view .category-title {
+    position: relative;
+    padding-left: 20px;
+}
+
+.profile-edit-view .category-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: #3b82f6;
+    border-radius: 4px;
+}
+
 .profile-footer {
-    padding: 24px;
-    text-align: center;
-    font-size: 14px;
-    color: #475569;
-    font-weight: 500;
-    background: #1e293b;
-    color: white;
+    display: none;
 }

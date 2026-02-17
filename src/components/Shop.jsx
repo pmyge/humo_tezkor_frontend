@@ -254,7 +254,7 @@ const Shop = ({ language }) => {
 
     const handleSidebarItemClick = (id) => {
         if (id === 'profile') {
-            if (currentUser && currentUser.phone_number) {
+            if (currentUser) {
                 setView('profile');
             } else {
                 setIsAuthDrawerOpen(true);
