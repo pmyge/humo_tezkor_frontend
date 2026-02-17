@@ -50,22 +50,14 @@ const Shop = ({ language }) => {
             const saved = localStorage.getItem('punyo_user');
             const current = saved ? JSON.parse(saved) : {};
 
-            // Define what we consider "default" or "not real" names
-            const isDefaultName = (name) => {
-                if (!name) return true;
-                const defaults = ['Admin', 'User', 'Mehmon', 'Гость'];
-                return defaults.includes(name);
-            };
-
+            // If the incoming user object has real data (from backend), it should dominate.
+            // Merge logic: new data wins for all shared keys.
             const merged = { ...current, ...user };
 
-            // Protect manual name: if incoming is default but local is real, keep local.
-            // This applies to automatic background syncs from Telegram, not manual PATCH responses.
-            if (isDefaultName(user.first_name) && !isDefaultName(current.first_name)) {
-                // If the user object comes from a direct update result, it should be trusted.
-                // We use a flag 'is_manual' or similar if needed, or check if the keys are limited.
-                merged.first_name = current.first_name;
-            }
+            // Specifically for names: if backend returns a default name but we have a real one locally, 
+            // maybe we want to keep it? The user said "name qismi Ergashboy bo'lishi kerak", 
+            // which is a real name from Telegram/Backend. 
+            // So we just trust the incoming 'user' object if it comes from an API call result.
 
             localStorage.setItem('punyo_user', JSON.stringify(merged));
             setCurrentUser(merged);

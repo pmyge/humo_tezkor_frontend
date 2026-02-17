@@ -6,6 +6,13 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
     const [name, setName] = useState(user?.first_name || '');
     const [loading, setLoading] = useState(false);
 
+    // Sync state if user prop changes
+    React.useEffect(() => {
+        if (user?.first_name) {
+            setName(user.first_name);
+        }
+    }, [user?.first_name]);
+
     const handleSave = async () => {
         setLoading(true);
         try {
@@ -30,7 +37,7 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         <div className="profile-edit-view">
             <div className="category-title">
                 <span className="back-btn" onClick={onBack}>←</span>
-                {language === 'ru' ? 'Мои персональные данные' : 'Mening shaxsiy ma\'lumotlarim'}
+                {language === 'ru' ? 'Персональные данные' : 'Shaxsiy ma\'lumotlar'}
             </div>
 
             <div className="profile-form">
@@ -41,6 +48,7 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                     <input
                         type="text"
                         value={user?.phone_number || ''}
+                        placeholder="+998 00 000 00 00"
                         disabled
                         className="profile-input disabled"
                     />
@@ -53,15 +61,10 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                     <input
                         type="text"
                         value={name}
-                        disabled
+                        onChange={(e) => setName(e.target.value)}
                         placeholder={language === 'ru' ? 'Имя' : 'Ism'}
-                        className="profile-input disabled"
+                        className="profile-input"
                     />
-                    <p className="input-hint">
-                        {language === 'ru'
-                            ? 'Имя синхронизируется с вашим профилем Telegram'
-                            : 'Ism Telegram profilingizdan avtomatik olingan'}
-                    </p>
                 </div>
 
                 <button
