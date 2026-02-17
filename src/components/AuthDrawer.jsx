@@ -24,8 +24,18 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
             // Priority 2: User ID from parent component (Shop) if passed
-            // This is CRITICAL if tgUser is missing but Shop already identified the user
+            // Priority 3: Last resort - check localStorage if we had a valid ID before
             let userId = tgUser?.id || user?.telegram_user_id;
+
+            if (!userId) {
+                const saved = localStorage.getItem('punyo_user');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed?.telegram_user_id && parsed.telegram_user_id < 9000000000) {
+                        userId = parsed.telegram_user_id;
+                    }
+                }
+            }
 
             // Log for debugging
             console.log('DEBUG AuthDrawer: Identities:', { tgUser, passedUser: user, chosenId: userId });
