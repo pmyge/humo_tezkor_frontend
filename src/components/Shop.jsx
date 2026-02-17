@@ -75,44 +75,61 @@ const Shop = ({ language }) => {
     }, []);
 
     const checkAuth = async () => {
-        try {
-            const telegram = window.Telegram?.WebApp;
-            const tgUser = telegram?.initDataUnsafe?.user;
+        let retries = 0;
+        const maxRetries = 3;
 
-            console.log('DEBUG: Telegram WebApp User:', tgUser);
+        const attemptAuth = async () => {
+            try {
+                const telegram = window.Telegram?.WebApp;
+                const tgUser = telegram?.initDataUnsafe?.user;
 
-            if (tgUser) {
-                const userData = await api.getUserInfo(tgUser.id);
-                if (userData) {
-                    console.log('DEBUG: Backend user data fetched:', userData);
-                    // Force update local data with backend data to clear stale fields
-                    updateCurrentUser(userData, 'backend');
+                console.log(`DEBUG: checkAuth attempt ${retries + 1}, tgUser:`, tgUser);
 
-                    // If backend name is different from current TG name, sync it
-                    if (tgUser.first_name && tgUser.first_name !== userData.first_name) {
-                        try {
-                            const updated = await api.updateUser(tgUser.id, {
-                                first_name: tgUser.first_name,
-                                last_name: tgUser.last_name || '',
-                                username: tgUser.username || ''
-                            });
-                            if (updated) updateCurrentUser(updated, 'backend');
-                        } catch (e) {
-                            console.error('Name sync failed:', e);
+                if (tgUser) {
+                    const userData = await api.getUserInfo(tgUser.id);
+                    if (userData) {
+                        console.log('DEBUG: Backend user data fetched:', userData);
+                        updateCurrentUser(userData, 'backend');
+
+                        // Sync names if they differ
+                        if (tgUser.first_name && tgUser.first_name !== userData.first_name) {
+                            try {
+                                const updated = await api.updateUser(tgUser.id, {
+                                    first_name: tgUser.first_name,
+                                    last_name: tgUser.last_name || '',
+                                    username: tgUser.username || ''
+                                });
+                                if (updated) updateCurrentUser(updated, 'backend');
+                            } catch (e) {
+                                console.error('Name sync failed:', e);
+                            }
                         }
+                    } else {
+                        updateCurrentUser({
+                            telegram_user_id: tgUser.id,
+                            first_name: tgUser.first_name,
+                            last_name: tgUser.last_name,
+                            username: tgUser.username
+                        }, 'telegram');
                     }
-                } else {
-                    // Failover to Telegram info if backend has nothing
-                    updateCurrentUser({
-                        telegram_user_id: tgUser.id,
-                        first_name: tgUser.first_name,
-                        last_name: tgUser.last_name,
-                        username: tgUser.username
-                    }, 'telegram');
+                    return true;
                 }
+                return false;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                return false;
             }
-        } catch (error) {
-            console.error('Auth check error:', error);
+        };
+
+        // Try immediately
+        let success = await attemptAuth();
+
+        // Retry if failed and we have retries left
+        while (!success && retries < maxRetries) {
+            retries++;
+            console.log(`DEBUG: Auth failed, retrying in 500ms... (${retries}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            success = await attemptAuth();
         }
     };
 

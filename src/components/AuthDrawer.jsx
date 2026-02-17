@@ -31,21 +31,13 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
             console.log('DEBUG AuthDrawer: Identities:', { tgUser, passedUser: user, chosenId: userId });
 
             if (!userId) {
-                // Check if we are in local development
-                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-                if (isLocal) {
-                    userId = parseInt(phoneNumber.replace(/[^0-9]/g, '')) + 9000000000;
-                    console.warn('DEBUG AuthDrawer: Fallback ID (Local-only):', userId);
-                } else {
-                    console.error('DEBUG AuthDrawer: CRITICAL - NO IDENTITY FOUND');
-                    const errorMsg = language === 'ru'
-                        ? 'Ошибка идентификации. Пожалуйста, закройте и снова откройте приложение.'
-                        : 'Identifikatsiya xatoligi. Iltimos, ilovani yopib boshqatdan oching.';
-                    setError(errorMsg);
-                    setLoading(false);
-                    return;
-                }
+                console.error('DEBUG AuthDrawer: CRITICAL - NO IDENTITY FOUND');
+                const errorMsg = language === 'ru'
+                    ? 'Ошибка идентификации. Пожалуйста, закройте и снова откройте приложение через бота.'
+                    : 'Identifikatsiya xatoligi. Iltimos, ilovani yopib bot orqali boshqatdan oching.';
+                setError(errorMsg);
+                setLoading(false);
+                return;
             }
 
             const firstName = tgUser?.first_name || '';
