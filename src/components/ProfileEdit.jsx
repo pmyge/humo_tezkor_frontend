@@ -1,28 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../api';
 import './ProfileEdit.css';
 
 export default function ProfileEdit({ user, onBack, onSave, language }) {
     const [name, setName] = useState(user?.first_name || '');
+    const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
     const [loading, setLoading] = useState(false);
 
     // Sync state if user prop changes
-    React.useEffect(() => {
-        if (user?.first_name) {
-            setName(user.first_name);
+    useEffect(() => {
+        if (user) {
+            setName(user.first_name || '');
+            setPhoneNumber(user.phone_number || '');
         }
-    }, [user?.first_name]);
+    }, [user]);
 
     const handleSave = async () => {
         setLoading(true);
         try {
-            const userId = user.telegram_user_id || user.telegram_id;
-            console.log('DEBUG ProfileEdit: saving for user', userId, 'with name', name);
-            const result = await api.updateUser(userId, { first_name: name });
-            console.log('DEBUG ProfileEdit: result received:', result);
+            const userId = user.telegram_user_id || user.id;
+            const result = await api.updateUser(userId, {
+                first_name: name,
+                phone_number: phoneNumber
+            });
             if (result) {
                 onSave(result);
-                // Also give immediate visual feedback
                 alert(language === 'ru' ? 'Изменения сохранены!' : 'O\'zgarishlar saqlandi!');
             }
         } catch (error) {
@@ -37,7 +39,7 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         <div className="profile-edit-view">
             <div className="category-title">
                 <span className="back-btn" onClick={onBack}>←</span>
-                {language === 'ru' ? 'Персональные данные' : 'Shaxsiy ma\'lumotlar'}
+                {language === 'ru' ? 'Мои персональные данные' : 'Mening shaxsiy ma\'lumotlarim'}
             </div>
 
             <div className="profile-form">
@@ -46,11 +48,11 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                         {language === 'ru' ? 'Номер телефона' : 'Telefon raqami'}
                     </label>
                     <input
-                        type="text"
-                        value={user?.phone_number || ''}
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="+998 00 000 00 00"
-                        disabled
-                        className="profile-input disabled"
+                        className="profile-input"
                     />
                 </div>
 
@@ -74,12 +76,12 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                 >
                     {loading
                         ? (language === 'ru' ? 'Сохранение...' : 'Saqlanmoqda...')
-                        : (language === 'ru' ? 'Сохранить изменения' : 'O\'zgarishlarni saqlash')}
+                        : (language === 'ru' ? 'O\'zgarishlarni saqlash' : 'O\'zgarishlarni saqlash')}
                 </button>
             </div>
 
             <div className="profile-footer">
-                @HUMOMARKET_BOT
+                @PUNYOMARKET_BOT
             </div>
         </div>
     );

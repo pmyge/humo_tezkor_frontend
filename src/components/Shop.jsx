@@ -79,24 +79,16 @@ const Shop = ({ language }) => {
             if (tgUser) {
                 const userData = await api.getUserInfo(tgUser.id);
                 if (userData) {
+                    console.log('DEBUG: Backend user data fetched', userData);
+                    // Force update local data with backend data to clear stale "Hffuf" or old phones
+                    updateCurrentUser(userData);
+
                     const saved = localStorage.getItem('punyo_user');
                     const localUser = saved ? JSON.parse(saved) : {};
 
-                    // Define what we consider "default" or "not real" names
-                    const isDefaultName = (name) => {
-                        if (!name) return true;
-                        const defaults = ['Admin', 'User', 'Mehmon', 'Гость'];
-                        return defaults.includes(name);
-                    };
-
-                    const hasRealNameBackend = !isDefaultName(userData.first_name);
-                    const hasRealNameLocal = !isDefaultName(localUser.first_name);
-                    const hasRealNameTG = tgUser.first_name && tgUser.first_name !== '';
-
-                    // Sync logic: Always prioritize Telegram's current name for Mini App users
-                    if (hasRealNameTG && tgUser.first_name !== userData.first_name) {
+                    // Sync logic for name changes in Telegram
+                    if (tgUser.first_name && tgUser.first_name !== userData.first_name) {
                         try {
-                            console.log('DEBUG: Syncing Telegram data to backend:', tgUser.first_name, tgUser.username);
                             const updated = await api.updateUser(tgUser.id, {
                                 first_name: tgUser.first_name,
                                 last_name: tgUser.last_name || '',
@@ -105,7 +97,6 @@ const Shop = ({ language }) => {
                             updateCurrentUser(updated || userData);
                         } catch (e) {
                             console.error('Name sync failed:', e);
-                            updateCurrentUser(userData);
                         }
                     }
                 }
