@@ -43,6 +43,7 @@ const Shop = ({ language }) => {
     const [showMapPicker, setShowMapPicker] = useState(false);
     const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
     const [showCartSuccess, setShowCartSuccess] = useState(false);
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     const updateCurrentUser = (user) => {
         if (user) {
@@ -204,6 +205,11 @@ const Shop = ({ language }) => {
                 setSelectedLocation(loc);
                 localStorage.setItem('punyo_location', JSON.stringify(loc));
                 setShowLocationPicker(false);
+                if (isCheckingOut) {
+                    setIsCheckingOut(false);
+                    // We need to wait for state to update or pass the location directly
+                    submitFullOrder(loc);
+                }
             }, () => {
                 alert(language === 'ru' ? 'Не удалось получить доступ к геопозиции' : 'Joylashuvni aniqliy olmadi');
             });
@@ -220,10 +226,17 @@ const Shop = ({ language }) => {
         setSelectedLocation(normalizedLocation);
         localStorage.setItem('punyo_location', JSON.stringify(normalizedLocation));
         setShowMapPicker(false);
+        if (isCheckingOut) {
+            setIsCheckingOut(false);
+            submitFullOrder(normalizedLocation);
+        }
     };
 
-    const submitFullOrder = async () => {
-        if (!selectedLocation) {
+    const submitFullOrder = async (providedLocation = null) => {
+        const locationToUse = providedLocation || selectedLocation;
+
+        if (!locationToUse) {
+            setIsCheckingOut(true);
             setShowLocationPicker(true);
             return;
         }
@@ -235,9 +248,9 @@ const Shop = ({ language }) => {
             const orderData = {
                 telegram_user_id: currentUser?.telegram_user_id,
                 items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity })),
-                latitude: selectedLocation.latitude,
-                longitude: selectedLocation.longitude,
-                delivery_address: selectedLocation.address,
+                latitude: locationToUse.latitude,
+                longitude: locationToUse.longitude,
+                delivery_address: locationToUse.address,
                 phone_number: currentUser?.phone_number
             };
 
