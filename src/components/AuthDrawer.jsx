@@ -20,18 +20,38 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         setError('');
 
         try {
-            // Use telegram user ID if available
-            const telegram = window.Telegram?.WebApp;
-            const tgUser = telegram?.initDataUnsafe?.user;
+            // Priority 1: Real Telegram WebApp User
+            const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-            console.log('DEBUG AuthDrawer: tgUser detected:', tgUser);
+            // Priority 2: User ID from parent component (Shop) if passed
+            // (We'll update Shop.jsx to pass this)
 
-            // Fallback ID for testing outside Telegram (Distinct from phone number to avoid confusion)
-            const testId = parseInt(phoneNumber.replace(/[^0-9]/g, '')) + 9000000000;
-            const userId = tgUser?.id || testId;
+            let userId = tgUser?.id;
+
+            // Log for debugging
+            console.log('DEBUG AuthDrawer: Detected tgUser:', tgUser);
+
+            if (!userId) {
+                // If we are in local development / test mode, we can allow a fallback
+                // but ONLY if explicitly intended.
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+                if (isLocal) {
+                    userId = parseInt(phoneNumber.replace(/[^0-9]/g, '')) + 9000000000;
+                    console.warn('DEBUG AuthDrawer: Using test fallback ID because on localhost:', userId);
+                } else {
+                    console.error('DEBUG AuthDrawer: No Telegram Identity found in production!');
+                    const errorMsg = language === 'ru'
+                        ? 'Ошибка идентификации Telegram. Пожалуйста, откройте приложение через бота.'
+                        : 'Telegram identifikatsiyasi topilmadi. Iltimos, ilovani bot orqali oching.';
+                    setError(errorMsg);
+                    setLoading(false);
+                    return;
+                }
+            }
+
             const firstName = tgUser?.first_name || '';
             const lastName = tgUser?.last_name || '';
-
             const fullPhone = selectedCountry.code + phoneNumber;
 
             const response = await api.registerPhone(
