@@ -318,20 +318,13 @@ const Shop = ({ language }) => {
 
     const handleSidebarItemClick = async (id) => {
         if (id === 'profile') {
-            if (currentUser) {
+            const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '' && currentUser.phone_number !== '-';
+
+            if (hasPhone) {
                 setView('profile');
             } else {
-                setLoading(true);
-                await checkAuth();
-                setLoading(false);
-
-                // Read fresh state from localStorage if needed, or rely on state update
-                const saved = localStorage.getItem('punyo_user');
-                if (saved) {
-                    setView('profile');
-                } else {
-                    setIsAuthDrawerOpen(true);
-                }
+                console.log('DEBUG: User profile incomplete, opening AuthDrawer from Sidebar');
+                setIsAuthDrawerOpen(true);
             }
         } else if (id === 'favorites') {
             setSelectedCategory(null);

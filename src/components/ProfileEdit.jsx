@@ -4,12 +4,14 @@ import './ProfileEdit.css';
 
 export default function ProfileEdit({ user, onBack, onSave, language }) {
     const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
+    const [userName, setUserName] = useState(user?.first_name || '');
     const [loading, setLoading] = useState(false);
 
     // Sync state if user prop changes
     useEffect(() => {
         if (user) {
             setPhoneNumber(user.phone_number || '');
+            setUserName(user.first_name || '');
         }
     }, [user]);
 
@@ -18,7 +20,8 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         try {
             const userId = user.telegram_user_id || user.id;
             const result = await api.updateUser(userId, {
-                phone_number: phoneNumber
+                phone_number: phoneNumber,
+                first_name: userName
             });
             if (result) {
                 onSave(result);
@@ -42,6 +45,19 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
             <div className="profile-form">
                 <div className="profile-input-group">
                     <label className="input-label">
+                        {language === 'ru' ? 'Имя' : 'Ismingiz'}
+                    </label>
+                    <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        placeholder={language === 'ru' ? 'Имя' : 'Ism'}
+                        className="profile-input"
+                    />
+                </div>
+
+                <div className="profile-input-group">
+                    <label className="input-label">
                         {language === 'ru' ? 'Номер телефона' : 'Telefon raqami'}
                     </label>
                     <input
@@ -56,11 +72,11 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                 <button
                     className="save-changes-btn"
                     onClick={handleSave}
-                    disabled={loading}
+                    disabled={loading || !userName.trim() || !phoneNumber}
                 >
                     {loading
                         ? (language === 'ru' ? 'Сохранение...' : 'Saqlanmoqda...')
-                        : (language === 'ru' ? 'Saqlash' : 'Saqlash')}
+                        : (language === 'ru' ? 'Сохранить' : 'Saqlash')}
                 </button>
             </div>
 

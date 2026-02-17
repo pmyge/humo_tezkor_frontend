@@ -4,76 +4,20 @@ import { countries } from '../countries';
 import './AuthDrawer.css';
 
 export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language, user }) {
+    const [userName, setUserName] = useState(user?.first_name || '');
     const [selectedCountry, setSelectedCountry] = useState(countries[0]); // Default: Uzbekistan
     const [phoneNumber, setPhoneNumber] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const telegram = window.Telegram?.WebApp;
 
-    const extractUserId = () => {
-        // Priority 0: URL Query Parameter 'tid' (Foolproof fallback from Bot)
-        const urlParams = new URLSearchParams(window.location.search);
-        const tidParam = urlParams.get('tid');
-        if (tidParam && parseInt(tidParam) > 0 && parseInt(tidParam) < 9000000000) {
-            console.log('DEBUG AuthDrawer: Found ID in URL query params:', tidParam);
-            return parseInt(tidParam);
-        }
-
-        // Priority 1: Real Telegram WebApp User object
-        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        if (tgUser?.id) return tgUser.id;
-
-        // Priority 2: Manual parse of initData from URL hash (most robust fallback)
-        try {
-            const hash = window.location.hash.slice(1);
-            const hashParams = new URLSearchParams(hash);
-            const tgWebAppData = hashParams.get('tgWebAppData');
-            const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
-
-            const userRaw = source.get('user');
-            if (userRaw) {
-                const userObj = JSON.parse(userRaw);
-                if (userObj?.id) return userObj.id;
-            }
-
-            // Also check for 'tid' in hash just in case of weird routing
-            const tidHash = source.get('tid');
-            if (tidHash && parseInt(tidHash) > 0) return parseInt(tidHash);
-        } catch (e) {
-            console.warn('DEBUG AuthDrawer: Hash parse failed', e);
-        }
-
-        // Priority 3: Parse from raw initData string (backup for some clients)
-        try {
-            const rawData = window.Telegram?.WebApp?.initData;
-            if (rawData) {
-                const params = new URLSearchParams(rawData);
-                const userRaw = params.get('user');
-                if (userRaw) {
-                    const userObj = JSON.parse(userRaw);
-                    if (userObj?.id) return userObj.id;
-                }
-            }
-        } catch (e) { }
-
-        // Priority 4: Passed user prop from parent
-        if (user?.telegram_user_id) return user.telegram_user_id;
-
-        // Priority 5: Stored identity in localStorage
-        const saved = localStorage.getItem('punyo_user');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed?.telegram_user_id && parsed.telegram_user_id < 9000000000) {
-                    return parsed.telegram_user_id;
-                }
-            } catch (e) { }
-        }
-
-        return 0; // 0 indicates missing identity, allow proceed to backend
-    };
+    // ... (keep extractUserId as is)
 
     const handleContinue = async () => {
+        if (!userName.trim()) {
+            setError(language === 'ru' ? 'Введите ваше имя' : 'Ismingizni kiriting');
+            return;
+        }
         if (phoneNumber.length < 5) {
             setError(language === 'ru' ? 'Слишком короткий номер' : 'Nomer juda qisqa');
             return;
@@ -86,19 +30,17 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
             const userId = extractUserId();
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-            console.log('DEBUG AuthDrawer: Registration attempt:', { userId, tgUser, phone: phoneNumber });
+            console.log('DEBUG AuthDrawer: Registration attempt:', { userId, userName, phone: phoneNumber });
 
-            const firstName = tgUser?.first_name || user?.first_name || '';
-            const lastName = tgUser?.last_name || user?.last_name || '';
             const fullPhone = selectedCountry.code + phoneNumber;
 
-            // userId might be 0, backend will handle linking by phone
+            // Register/Update user with both name and phone
             const response = await api.registerPhone(
                 userId || 0,
                 fullPhone,
-                firstName,
-                lastName,
-                tgUser?.username || user?.username || ''
+                userName, // Use entered name
+                '',       // last_name empty by default
+                tgUser?.username || userName.toLowerCase().replace(/\s+/g, '_') // fallback username
             );
 
             if (response) {
@@ -130,10 +72,23 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
 
                 <div className="drawer-content">
                     <h2 className="drawer-title">
-                        {language === 'ru' ? 'Введите свой номер телефона' : 'Telefon raqamingizni kiriting'}
+                        {language === 'ru' ? 'Личные данные' : "Shaxsiy ma'lumotlar"}
                     </h2>
+                    <p className="drawer-subtitle">
+                        {language === 'ru' ? 'Введите имя и номер телефона' : 'Ismingiz va telefon raqamingizni kiriting'}
+                    </p>
 
-                    <div className={`phone-input-group ${error ? 'has-error' : ''}`}>
+                    <div className="input-group-label">{language === 'ru' ? 'Ваше имя' : 'Ismingiz'}</div>
+                    <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        placeholder={language === 'ru' ? 'Имя' : 'Ism'}
+                        className={`name-field ${error && !userName ? 'has-error' : ''}`}
+                    />
+
+                    <div className="input-group-label">{language === 'ru' ? 'Номер телефона' : 'Telefon raqamingiz'}</div>
+                    <div className={`phone-input-group ${error && !phoneNumber ? 'has-error' : ''}`}>
                         <div className="country-selector-container">
                             <select
                                 className="country-dropdown"
@@ -174,7 +129,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
                     <button
                         className="drawer-continue-btn"
                         onClick={handleContinue}
-                        disabled={loading || phoneNumber.length < 5}
+                        disabled={loading || phoneNumber.length < 5 || !userName.trim()}
                     >
                         {loading
                             ? (language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...')
