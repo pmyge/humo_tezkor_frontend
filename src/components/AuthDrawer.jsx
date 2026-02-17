@@ -3,7 +3,7 @@ import { api } from '../api';
 import { countries } from '../countries';
 import './AuthDrawer.css';
 
-export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language }) {
+export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language, user }) {
     const [selectedCountry, setSelectedCountry] = useState(countries[0]); // Default: Uzbekistan
     const [phoneNumber, setPhoneNumber] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,30 +20,28 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language 
         setError('');
 
         try {
-            // Priority 1: Real Telegram WebApp User
+            // Priority 1: Real Telegram WebApp User (Active session)
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
             // Priority 2: User ID from parent component (Shop) if passed
-            // (We'll update Shop.jsx to pass this)
-
-            let userId = tgUser?.id;
+            // This is CRITICAL if tgUser is missing but Shop already identified the user
+            let userId = tgUser?.id || user?.telegram_user_id;
 
             // Log for debugging
-            console.log('DEBUG AuthDrawer: Detected tgUser:', tgUser);
+            console.log('DEBUG AuthDrawer: Identities:', { tgUser, passedUser: user, chosenId: userId });
 
             if (!userId) {
-                // If we are in local development / test mode, we can allow a fallback
-                // but ONLY if explicitly intended.
+                // Check if we are in local development
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
                 if (isLocal) {
                     userId = parseInt(phoneNumber.replace(/[^0-9]/g, '')) + 9000000000;
-                    console.warn('DEBUG AuthDrawer: Using test fallback ID because on localhost:', userId);
+                    console.warn('DEBUG AuthDrawer: Fallback ID (Local-only):', userId);
                 } else {
-                    console.error('DEBUG AuthDrawer: No Telegram Identity found in production!');
+                    console.error('DEBUG AuthDrawer: CRITICAL - NO IDENTITY FOUND');
                     const errorMsg = language === 'ru'
-                        ? 'Ошибка идентификации Telegram. Пожалуйста, откройте приложение через бота.'
-                        : 'Telegram identifikatsiyasi topilmadi. Iltimos, ilovani bot orqali oching.';
+                        ? 'Ошибка идентификации. Пожалуйста, закройте и снова откройте приложение.'
+                        : 'Identifikatsiya xatoligi. Iltimos, ilovani yopib boshqatdan oching.';
                     setError(errorMsg);
                     setLoading(false);
                     return;

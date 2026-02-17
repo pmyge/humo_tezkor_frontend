@@ -461,6 +461,7 @@ const Shop = ({ language }) => {
                     setIsCheckingOut(false);
                 }}
                 language={language}
+                user={currentUser}
                 onAuthenticated={(user) => {
                     updateCurrentUser(user);
                     setIsAuthDrawerOpen(false); // Always close drawer first
