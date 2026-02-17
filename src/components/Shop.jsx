@@ -440,7 +440,11 @@ const Shop = ({ language }) => {
                     language={language}
                     onBack={() => setView('home')}
                     onSave={(updated) => {
-                        updateCurrentUser(updated);
+                        if (updated === null) {
+                            updateCurrentUser(null);
+                        } else {
+                            updateCurrentUser(updated);
+                        }
                         setView('home');
                     }}
                 />
