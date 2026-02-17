@@ -99,11 +99,22 @@ const Shop = ({ language }) => {
         const attemptAuth = async () => {
             try {
                 const telegram = window.Telegram?.WebApp;
-                const tgUser = telegram?.initDataUnsafe?.user;
+                let tgUser = telegram?.initDataUnsafe?.user;
+
+                // Aggressive backup: parse from initData string (useful for some clients/reload scenarios)
+                if (!tgUser && telegram?.initData) {
+                    try {
+                        const params = new URLSearchParams(telegram.initData);
+                        const userRaw = params.get('user');
+                        if (userRaw) tgUser = JSON.parse(userRaw);
+                    } catch (e) {
+                        console.warn('DEBUG: Failed to parse initData string', e);
+                    }
+                }
 
                 console.log(`DEBUG: checkAuth attempt ${retries + 1}, tgUser:`, tgUser);
 
-                if (tgUser && tgUser.id < 9000000000) {
+                if (tgUser && tgUser.id && parseInt(tgUser.id) < 9000000000) {
                     try {
                         const userData = await api.getUserInfo(tgUser.id);
                         if (userData) {
@@ -524,6 +535,7 @@ const Shop = ({ language }) => {
                     value={searchQuery}
                     onChange={setSearchQuery}
                     placeholder={language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...'}
+                    onSearch={() => { }}
                 />
             </div>
 

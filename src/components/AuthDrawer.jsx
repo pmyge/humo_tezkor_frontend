@@ -10,6 +10,43 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
     const [error, setError] = useState('');
     const telegram = window.Telegram?.WebApp;
 
+    const extractUserId = () => {
+        // Priority 1: Real Telegram WebApp User object
+        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (tgUser?.id) return tgUser.id;
+
+        // Priority 2: Parse from raw initData string (backup for some clients)
+        try {
+            const rawData = window.Telegram?.WebApp?.initData;
+            if (rawData) {
+                const params = new URLSearchParams(rawData);
+                const userRaw = params.get('user');
+                if (userRaw) {
+                    const userObj = JSON.parse(userRaw);
+                    if (userObj?.id) return userObj.id;
+                }
+            }
+        } catch (e) {
+            console.warn('DEBUG AuthDrawer: Failed to parse initData string', e);
+        }
+
+        // Priority 3: Passed user prop from parent
+        if (user?.telegram_user_id) return user.telegram_user_id;
+
+        // Priority 4: Stored identity in localStorage
+        const saved = localStorage.getItem('punyo_user');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed?.telegram_user_id && parsed.telegram_user_id < 9000000000) {
+                    return parsed.telegram_user_id;
+                }
+            } catch (e) { }
+        }
+
+        return null;
+    };
+
     const handleContinue = async () => {
         if (phoneNumber.length < 5) {
             setError(language === 'ru' ? 'Слишком короткий номер' : 'Nomer juda qisqa');
@@ -20,28 +57,12 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
         setError('');
 
         try {
-            // Priority 1: Real Telegram WebApp User (Active session)
+            const userId = extractUserId();
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-            // Priority 2: User ID from parent component (Shop) if passed
-            // Priority 3: Last resort - check localStorage if we had a valid ID before
-            let userId = tgUser?.id || user?.telegram_user_id;
+            console.log('DEBUG AuthDrawer: Final Identity Check:', { userId, tgUser });
 
             if (!userId) {
-                const saved = localStorage.getItem('punyo_user');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (parsed?.telegram_user_id && parsed.telegram_user_id < 9000000000) {
-                        userId = parsed.telegram_user_id;
-                    }
-                }
-            }
-
-            // Log for debugging
-            console.log('DEBUG AuthDrawer: Identities:', { tgUser, passedUser: user, chosenId: userId });
-
-            if (!userId) {
-                console.error('DEBUG AuthDrawer: CRITICAL - NO IDENTITY FOUND');
                 const errorMsg = language === 'ru'
                     ? 'Ошибка идентификации. Пожалуйста, закройте и снова откройте приложение через бота.'
                     : 'Identifikatsiya xatoligi. Iltimos, ilovani yopib bot orqali boshqatdan oching.';
@@ -50,8 +71,8 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
                 return;
             }
 
-            const firstName = tgUser?.first_name || '';
-            const lastName = tgUser?.last_name || '';
+            const firstName = tgUser?.first_name || user?.first_name || '';
+            const lastName = tgUser?.last_name || user?.last_name || '';
             const fullPhone = selectedCountry.code + phoneNumber;
 
             const response = await api.registerPhone(
@@ -59,7 +80,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
                 fullPhone,
                 firstName,
                 lastName,
-                tgUser?.username || ''
+                tgUser?.username || user?.username || ''
             );
 
             if (response) {
