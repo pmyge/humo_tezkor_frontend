@@ -1,4 +1,3 @@
-```javascript
 import React, { useState, useEffect } from 'react';
 import { api } from '../api';
 import './ProfileEdit.css';
@@ -18,8 +17,8 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         setLoading(true);
         try {
             const userId = user.telegram_user_id || user.id;
-            const result = await api.updateUser(userId, { 
-                phone_number: phoneNumber 
+            const result = await api.updateUser(userId, {
+                phone_number: phoneNumber
             });
             if (result) {
                 onSave(result);

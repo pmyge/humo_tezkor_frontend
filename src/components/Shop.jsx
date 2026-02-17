@@ -455,6 +455,7 @@ const Shop = ({ language }) => {
                     updateCurrentUser(user);
                     if (isCheckingOut) {
                         // Phone registered, now move to location step
+                        setIsAuthDrawerOpen(false); // Close auth drawer
                         setShowLocationPicker(true);
                     } else {
                         setView('profile');
