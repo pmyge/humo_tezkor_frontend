@@ -1,16 +1,15 @@
+```javascript
 import React, { useState, useEffect } from 'react';
 import { api } from '../api';
 import './ProfileEdit.css';
 
 export default function ProfileEdit({ user, onBack, onSave, language }) {
-    const [name, setName] = useState(user?.first_name || '');
     const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
     const [loading, setLoading] = useState(false);
 
     // Sync state if user prop changes
     useEffect(() => {
         if (user) {
-            setName(user.first_name || '');
             setPhoneNumber(user.phone_number || '');
         }
     }, [user]);
@@ -19,9 +18,8 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
         setLoading(true);
         try {
             const userId = user.telegram_user_id || user.id;
-            const result = await api.updateUser(userId, {
-                first_name: name,
-                phone_number: phoneNumber
+            const result = await api.updateUser(userId, { 
+                phone_number: phoneNumber 
             });
             if (result) {
                 onSave(result);
@@ -52,19 +50,6 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="+998 00 000 00 00"
-                        className="profile-input"
-                    />
-                </div>
-
-                <div className="profile-input-group">
-                    <label className="input-label">
-                        {language === 'ru' ? 'Ваше имя' : 'Sizning ismingiz'}
-                    </label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder={language === 'ru' ? 'Имя' : 'Ism'}
                         className="profile-input"
                     />
                 </div>
