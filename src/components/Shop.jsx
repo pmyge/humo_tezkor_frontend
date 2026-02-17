@@ -28,7 +28,17 @@ const Shop = ({ language }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [currentUser, setCurrentUser] = useState(() => {
         const saved = localStorage.getItem('punyo_user');
-        return saved ? JSON.parse(saved) : null;
+        if (saved) {
+            const data = JSON.parse(saved);
+            // CRITICAL: Purge any legacy fallback IDs (9,000,000,000+)
+            if (data?.telegram_user_id && parseInt(data.telegram_user_id) >= 9000000000) {
+                console.warn('DEBUG: Purged legacy fallback identity from storage');
+                localStorage.removeItem('punyo_user');
+                return null;
+            }
+            return data;
+        }
+        return null;
     });
     const [favorites, setFavorites] = useState(() => {
         const saved = localStorage.getItem('punyo_favorites');
