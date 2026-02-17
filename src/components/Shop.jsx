@@ -235,6 +235,14 @@ const Shop = ({ language }) => {
     const submitFullOrder = async (providedLocation = null) => {
         const locationToUse = providedLocation || selectedLocation;
 
+        // 1. Check for Phone Number first
+        if (!currentUser?.phone_number) {
+            setIsCheckingOut(true);
+            setIsAuthDrawerOpen(true);
+            return;
+        }
+
+        // 2. Check for Location next
         if (!locationToUse) {
             setIsCheckingOut(true);
             setShowLocationPicker(true);
@@ -461,11 +469,19 @@ const Shop = ({ language }) => {
 
             <AuthDrawer
                 isOpen={isAuthDrawerOpen}
-                onClose={() => setIsAuthDrawerOpen(false)}
+                onClose={() => {
+                    setIsAuthDrawerOpen(false);
+                    setIsCheckingOut(false);
+                }}
                 language={language}
                 onAuthenticated={(user) => {
                     updateCurrentUser(user);
-                    setView('profile');
+                    if (isCheckingOut) {
+                        // Phone registered, now move to location step
+                        setShowLocationPicker(true);
+                    } else {
+                        setView('profile');
+                    }
                 }}
             />
 
