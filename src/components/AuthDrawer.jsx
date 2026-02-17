@@ -15,7 +15,23 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
         const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
         if (tgUser?.id) return tgUser.id;
 
-        // Priority 2: Parse from raw initData string (backup for some clients)
+        // Priority 2: Manual parse of initData from URL hash (most robust fallback)
+        try {
+            const hash = window.location.hash.slice(1);
+            const hashParams = new URLSearchParams(hash);
+            const tgWebAppData = hashParams.get('tgWebAppData');
+            const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
+
+            const userRaw = source.get('user');
+            if (userRaw) {
+                const userObj = JSON.parse(userRaw);
+                if (userObj?.id) return userObj.id;
+            }
+        } catch (e) {
+            console.warn('DEBUG AuthDrawer: Hash parse failed', e);
+        }
+
+        // Priority 3: Parse from raw initData string (backup for some clients)
         try {
             const rawData = window.Telegram?.WebApp?.initData;
             if (rawData) {
@@ -26,14 +42,12 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
                     if (userObj?.id) return userObj.id;
                 }
             }
-        } catch (e) {
-            console.warn('DEBUG AuthDrawer: Failed to parse initData string', e);
-        }
+        } catch (e) { }
 
-        // Priority 3: Passed user prop from parent
+        // Priority 4: Passed user prop from parent
         if (user?.telegram_user_id) return user.telegram_user_id;
 
-        // Priority 4: Stored identity in localStorage
+        // Priority 5: Stored identity in localStorage
         const saved = localStorage.getItem('punyo_user');
         if (saved) {
             try {
@@ -44,7 +58,7 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
             } catch (e) { }
         }
 
-        return null;
+        return 0; // 0 indicates missing identity, allow proceed to backend
     };
 
     const handleContinue = async () => {
@@ -60,23 +74,15 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
             const userId = extractUserId();
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-            console.log('DEBUG AuthDrawer: Final Identity Check:', { userId, tgUser });
-
-            if (!userId) {
-                const errorMsg = language === 'ru'
-                    ? 'Ошибка идентификации. Пожалуйста, закройте и снова откройте приложение через бота.'
-                    : 'Identifikatsiya xatoligi. Iltimos, ilovani yopib bot orqali boshqatdan oching.';
-                setError(errorMsg);
-                setLoading(false);
-                return;
-            }
+            console.log('DEBUG AuthDrawer: Registration attempt:', { userId, tgUser, phone: phoneNumber });
 
             const firstName = tgUser?.first_name || user?.first_name || '';
             const lastName = tgUser?.last_name || user?.last_name || '';
             const fullPhone = selectedCountry.code + phoneNumber;
 
+            // userId might be 0, backend will handle linking by phone
             const response = await api.registerPhone(
-                userId,
+                userId || 0,
                 fullPhone,
                 firstName,
                 lastName,

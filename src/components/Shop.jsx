@@ -101,6 +101,19 @@ const Shop = ({ language }) => {
                 const telegram = window.Telegram?.WebApp;
                 let tgUser = telegram?.initDataUnsafe?.user;
 
+                // Priority 2: Manual parse of initData from URL hash (most robust fallback)
+                if (!tgUser) {
+                    try {
+                        const hash = window.location.hash.slice(1);
+                        const hashParams = new URLSearchParams(hash);
+                        const tgWebAppData = hashParams.get('tgWebAppData');
+                        const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
+
+                        const userRaw = source.get('user');
+                        if (userRaw) tgUser = JSON.parse(userRaw);
+                    } catch (e) { }
+                }
+
                 // Aggressive backup: parse from initData string (useful for some clients/reload scenarios)
                 if (!tgUser && telegram?.initData) {
                     try {
