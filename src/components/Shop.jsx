@@ -521,15 +521,19 @@ const Shop = ({ language }) => {
                 onClose={() => {
                     setIsAuthDrawerOpen(false);
                     setIsCheckingOut(false);
+                    // Clear secondary flags
+                    window._pendingLocationAfterAuth = false;
                 }}
                 language={language}
                 user={currentUser}
                 onAuthenticated={(user) => {
                     updateCurrentUser(user);
                     setIsAuthDrawerOpen(false); // Always close drawer first
-                    if (isCheckingOut) {
+
+                    if (isCheckingOut || window._pendingLocationAfterAuth) {
                         // Phone registered, now move to location step
                         setShowLocationPicker(true);
+                        window._pendingLocationAfterAuth = false;
                     } else {
                         setView('profile');
                     }
@@ -542,7 +546,14 @@ const Shop = ({ language }) => {
                         <span className="menu-icon">☰</span>
                     </button>
                     <h1>PUNYO MARKET</h1>
-                    <button className="location-header-btn" onClick={() => setShowLocationPicker(true)}>
+                    <button className="location-header-btn" onClick={() => {
+                        if (!currentUser || !currentUser.phone_number) {
+                            window._pendingLocationAfterAuth = true;
+                            setIsAuthDrawerOpen(true);
+                        } else {
+                            setShowLocationPicker(true);
+                        }
+                    }}>
                         <span className="location-icon">📍</span>
                     </button>
                 </div>
