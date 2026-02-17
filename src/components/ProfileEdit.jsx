@@ -78,6 +78,36 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
                         ? (language === 'ru' ? 'Сохранение...' : 'Saqlanmoqda...')
                         : (language === 'ru' ? 'Сохранить' : 'Saqlash')}
                 </button>
+
+                <div className="logout-section">
+                    <button
+                        className="logout-btn"
+                        onClick={async () => {
+                            if (window.confirm(language === 'ru' ? 'Вы уверены, что хотите выйти? Ваши данные будут удалены.' : 'Tizimdan chiqmoqchimisiz? Ma\'lumotlaringiz o\'chiriladi.')) {
+                                setLoading(true);
+                                try {
+                                    const userId = user.telegram_user_id || user.id;
+                                    await api.deleteAccount(userId);
+                                    localStorage.removeItem('punyo_user');
+                                    onSave(null); // Reset user state in Shop
+                                } catch (e) {
+                                    console.error('Logout error:', e);
+                                    alert('Error: ' + e.message);
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }
+                        }}
+                        disabled={loading}
+                    >
+                        {language === 'ru' ? 'Выйти из системы' : 'Tizimdan chiqish'}
+                    </button>
+                    <p className="logout-hint">
+                        {language === 'ru'
+                            ? 'Ваши данные будут удалены из базы данных.'
+                            : 'Ma\'lumotlaringiz bazadan o\'chiriladi.'}
+                    </p>
+                </div>
             </div>
 
             <div className="profile-footer">

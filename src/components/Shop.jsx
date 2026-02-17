@@ -139,6 +139,11 @@ const Shop = ({ language }) => {
                     try {
                         const userData = await api.getUserInfo(tgUser.id);
                         if (userData) {
+                            if (userData.is_registered === false) {
+                                console.log('DEBUG: User exists as guest only. Clearing local auth.');
+                                updateCurrentUser(null);
+                                return false;
+                            }
                             updateCurrentUser(userData, 'backend');
                             return true;
                         }

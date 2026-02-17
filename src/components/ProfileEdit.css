@@ -80,6 +80,35 @@
     border-radius: 4px;
 }
 
+.logout-section {
+    margin-top: auto;
+    padding-top: 40px;
+    text-align: center;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:active {
+    background: #fef2f2;
+}
+
+.logout-hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
 .profile-footer {
     display: none;
 }
