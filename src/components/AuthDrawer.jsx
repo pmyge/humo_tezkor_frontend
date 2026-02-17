@@ -11,6 +11,14 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
     const telegram = window.Telegram?.WebApp;
 
     const extractUserId = () => {
+        // Priority 0: URL Query Parameter 'tid' (Foolproof fallback from Bot)
+        const urlParams = new URLSearchParams(window.location.search);
+        const tidParam = urlParams.get('tid');
+        if (tidParam && parseInt(tidParam) > 0 && parseInt(tidParam) < 9000000000) {
+            console.log('DEBUG AuthDrawer: Found ID in URL query params:', tidParam);
+            return parseInt(tidParam);
+        }
+
         // Priority 1: Real Telegram WebApp User object
         const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
         if (tgUser?.id) return tgUser.id;
@@ -27,6 +35,10 @@ export default function AuthDrawer({ isOpen, onClose, onAuthenticated, language,
                 const userObj = JSON.parse(userRaw);
                 if (userObj?.id) return userObj.id;
             }
+
+            // Also check for 'tid' in hash just in case of weird routing
+            const tidHash = source.get('tid');
+            if (tidHash && parseInt(tidHash) > 0) return parseInt(tidHash);
         } catch (e) {
             console.warn('DEBUG AuthDrawer: Hash parse failed', e);
         }

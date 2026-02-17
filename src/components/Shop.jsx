@@ -99,10 +99,14 @@ const Shop = ({ language }) => {
         const attemptAuth = async () => {
             try {
                 const telegram = window.Telegram?.WebApp;
-                let tgUser = telegram?.initDataUnsafe?.user;
+
+                // Priority 0: URL Query Parameter 'tid' (Foolproof fallback from Bot)
+                const urlParams = new URLSearchParams(window.location.search);
+                const tidParam = urlParams.get('tid');
+                let tgUser = tidParam && parseInt(tidParam) > 0 ? { id: parseInt(tidParam) } : telegram?.initDataUnsafe?.user;
 
                 // Priority 2: Manual parse of initData from URL hash (most robust fallback)
-                if (!tgUser) {
+                if (!tgUser || !tgUser.id) {
                     try {
                         const hash = window.location.hash.slice(1);
                         const hashParams = new URLSearchParams(hash);
@@ -111,6 +115,10 @@ const Shop = ({ language }) => {
 
                         const userRaw = source.get('user');
                         if (userRaw) tgUser = JSON.parse(userRaw);
+
+                        // Also check for 'tid' in hash just in case of weird routing
+                        const tidHash = source.get('tid');
+                        if (tidHash && parseInt(tidHash) > 0) tgUser = { id: parseInt(tidHash) };
                     } catch (e) { }
                 }
 
