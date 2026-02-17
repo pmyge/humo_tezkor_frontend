@@ -7,10 +7,13 @@ import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
 import ProfileEdit from './ProfileEdit';
 import ProductDetail from './ProductDetail';
+import LocationPicker from './LocationPicker';
+import MapPicker from './MapPicker';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
 import './SearchBar.css';
+import './ProductDetail.css'; // Also for shared components
 import '../index.css';
 
 const Shop = ({ language }) => {
@@ -31,6 +34,15 @@ const Shop = ({ language }) => {
         const saved = localStorage.getItem('punyo_favorites');
         return saved ? JSON.parse(saved) : [];
     });
+    const [cart, setCart] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState(() => {
+        const saved = localStorage.getItem('punyo_location');
+        return saved ? JSON.parse(saved) : null;
+    });
+    const [showLocationPicker, setShowLocationPicker] = useState(false);
+    const [showMapPicker, setShowMapPicker] = useState(false);
+    const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+    const [showCartSuccess, setShowCartSuccess] = useState(false);
 
     const updateCurrentUser = (user) => {
         if (user) {
@@ -140,6 +152,102 @@ const Shop = ({ language }) => {
         localStorage.setItem('punyo_favorites', JSON.stringify(newFavorites));
     };
 
+    const handleAddToCart = (product, quantity) => {
+        const newItem = {
+            product_id: product.id,
+            name: product.name,
+            name_ru: product.name_ru,
+            price: product.price,
+            image: product.image,
+            quantity: quantity
+        };
+
+        setCart(prevCart => {
+            const existingIndex = prevCart.findIndex(item => item.product_id === product.id);
+            if (existingIndex > -1) {
+                const newCart = [...prevCart];
+                newCart[existingIndex].quantity += quantity;
+                return newCart;
+            }
+            return [...prevCart, newItem];
+        });
+
+        setSelectedProduct(null);
+        setShowCartSuccess(true);
+        setTimeout(() => setShowCartSuccess(false), 3000);
+    };
+
+    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    const handleAutoLocation = () => {
+        const telegram = window.Telegram?.WebApp;
+        if (telegram && telegram.requestLocation) {
+            telegram.requestLocation((data) => {
+                if (data && data.location) {
+                    const loc = {
+                        latitude: data.location.latitude,
+                        longitude: data.location.longitude,
+                        address: 'Telegram Geolocation'
+                    };
+                    setSelectedLocation(loc);
+                    localStorage.setItem('punyo_location', JSON.stringify(loc));
+                    setShowLocationPicker(false);
+                }
+            });
+        } else {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const loc = {
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude,
+                    address: 'Browser Geolocation'
+                };
+                setSelectedLocation(loc);
+                localStorage.setItem('punyo_location', JSON.stringify(loc));
+                setShowLocationPicker(false);
+            }, () => {
+                alert(language === 'ru' ? 'Не удалось получить доступ к геопозиции' : 'Joylashuvni aniqliy olmadi');
+            });
+        }
+    };
+
+    const handleManualLocation = (data) => {
+        setSelectedLocation(data);
+        localStorage.setItem('punyo_location', JSON.stringify(data));
+        setShowMapPicker(false);
+    };
+
+    const submitFullOrder = async () => {
+        if (!selectedLocation) {
+            setShowLocationPicker(true);
+            return;
+        }
+
+        if (cart.length === 0) return;
+
+        setIsSubmittingOrder(true);
+        try {
+            const orderData = {
+                telegram_user_id: currentUser?.telegram_user_id,
+                items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity })),
+                latitude: selectedLocation.latitude,
+                longitude: selectedLocation.longitude,
+                delivery_address: selectedLocation.address,
+                phone_number: currentUser?.phone_number
+            };
+
+            const response = await api.createOrder(orderData);
+            if (response.id) {
+                alert(language === 'ru' ? 'Заказ успешно оформлен!' : 'Buyurtma muvaffaqiyatli qabul qilindi!');
+                setCart([]);
+            }
+        } catch (error) {
+            console.error('Order submit error:', error);
+            alert('Xatolik yuz berdi');
+        } finally {
+            setIsSubmittingOrder(false);
+        }
+    };
+
     const handleSidebarItemClick = (id) => {
         if (id === 'profile') {
             if (currentUser && currentUser.phone_number) {
@@ -192,6 +300,7 @@ const Shop = ({ language }) => {
                     onBack={() => setSelectedProduct(null)}
                     favorites={favorites}
                     onToggleFavorite={toggleFavorite}
+                    onAddToCart={handleAddToCart}
                 />
             );
         }
@@ -347,7 +456,9 @@ const Shop = ({ language }) => {
                         <span className="menu-icon">☰</span>
                     </button>
                     <h1>PUNYO MARKET</h1>
-                    <div className="header-placeholder"></div>
+                    <button className="location-header-btn" onClick={() => setShowLocationPicker(true)}>
+                        <span className="location-icon">📍</span>
+                    </button>
                 </div>
                 <p className="subtitle">mini ilova</p>
             </header>
@@ -361,6 +472,48 @@ const Shop = ({ language }) => {
             </div>
 
             {renderContent()}
+
+            {cart.length > 0 && view === 'home' && !selectedProduct && (
+                <div className="cart-summary-fixed">
+                    <button className="cart-total-btn" onClick={submitFullOrder} disabled={isSubmittingOrder}>
+                        <span className="cart-btn-icon">🛒</span>
+                        <span className="cart-btn-text">
+                            {isSubmittingOrder
+                                ? (language === 'ru' ? 'Оформление...' : 'Yuborilmoqda...')
+                                : cartTotal.toLocaleString() + ' UZS'}
+                        </span>
+                    </button>
+                </div>
+            )}
+
+            {showCartSuccess && (
+                <div className="cart-success-toast">
+                    <div className="toast-content">
+                        <span className="check-icon">✅</span>
+                        <span>{language === 'ru' ? 'Товар добавлен в корзину!' : 'Mahsulot savatga qo\'shildi!'}</span>
+                    </div>
+                </div>
+            )}
+
+            {showLocationPicker && (
+                <LocationPicker
+                    language={language}
+                    onCancel={() => setShowLocationPicker(false)}
+                    onAutoLocation={handleAutoLocation}
+                    onManualLocation={() => {
+                        setShowLocationPicker(false);
+                        setShowMapPicker(true);
+                    }}
+                />
+            )}
+
+            {showMapPicker && (
+                <MapPicker
+                    language={language}
+                    onCancel={() => setShowMapPicker(false)}
+                    onConfirm={handleManualLocation}
+                />
+            )}
         </div>
     );
 };
