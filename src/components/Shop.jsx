@@ -57,6 +57,15 @@ const Shop = ({ language }) => {
 
     const updateCurrentUser = (user, source = 'local') => {
         if (user) {
+            // CRITICAL: Block any 9bn+ IDs from being saved
+            const tid = user.telegram_user_id || (user.id && user.id < 9000000000 ? user.id : null);
+            if (tid && parseInt(tid) >= 9000000000) {
+                console.error('DEBUG: BLOCKING save of legacy fallback ID:', tid);
+                localStorage.removeItem('punyo_user');
+                setCurrentUser(null);
+                return;
+            }
+
             const saved = localStorage.getItem('punyo_user');
             const current = saved ? JSON.parse(saved) : {};
 
@@ -65,9 +74,8 @@ const Shop = ({ language }) => {
                 user.phone_number = '';
             }
 
-            // If the source is 'backend', we prioritize its fields and clear stale ones.
             const merged = source === 'backend'
-                ? { ...user } // Full trust on backend
+                ? { ...user }
                 : { ...current, ...user };
 
             console.log(`DEBUG updateCurrentUser (source: ${source}):`, merged);
@@ -86,7 +94,7 @@ const Shop = ({ language }) => {
 
     const checkAuth = async () => {
         let retries = 0;
-        const maxRetries = 3;
+        const maxRetries = 5; // Increased retries
 
         const attemptAuth = async () => {
             try {
@@ -95,33 +103,24 @@ const Shop = ({ language }) => {
 
                 console.log(`DEBUG: checkAuth attempt ${retries + 1}, tgUser:`, tgUser);
 
-                if (tgUser) {
-                    const userData = await api.getUserInfo(tgUser.id);
-                    if (userData) {
-                        console.log('DEBUG: Backend user data fetched:', userData);
-                        updateCurrentUser(userData, 'backend');
-
-                        // Sync names if they differ
-                        if (tgUser.first_name && tgUser.first_name !== userData.first_name) {
-                            try {
-                                const updated = await api.updateUser(tgUser.id, {
-                                    first_name: tgUser.first_name,
-                                    last_name: tgUser.last_name || '',
-                                    username: tgUser.username || ''
-                                });
-                                if (updated) updateCurrentUser(updated, 'backend');
-                            } catch (e) {
-                                console.error('Name sync failed:', e);
-                            }
+                if (tgUser && tgUser.id < 9000000000) {
+                    try {
+                        const userData = await api.getUserInfo(tgUser.id);
+                        if (userData) {
+                            updateCurrentUser(userData, 'backend');
+                            return true;
                         }
-                    } else {
-                        updateCurrentUser({
-                            telegram_user_id: tgUser.id,
-                            first_name: tgUser.first_name,
-                            last_name: tgUser.last_name,
-                            username: tgUser.username
-                        }, 'telegram');
+                    } catch (e) {
+                        console.warn('Backend check failed, using provisional local identity');
                     }
+
+                    // Fallback to local/tg identity if backend is slow/offline but we HAVE tgUser
+                    updateCurrentUser({
+                        telegram_user_id: tgUser.id,
+                        first_name: tgUser.first_name,
+                        last_name: tgUser.last_name,
+                        username: tgUser.username
+                    }, 'telegram');
                     return true;
                 }
                 return false;
@@ -131,13 +130,9 @@ const Shop = ({ language }) => {
             }
         };
 
-        // Try immediately
         let success = await attemptAuth();
-
-        // Retry if failed and we have retries left
         while (!success && retries < maxRetries) {
             retries++;
-            console.log(`DEBUG: Auth failed, retrying in 500ms... (${retries}/${maxRetries})`);
             await new Promise(resolve => setTimeout(resolve, 500));
             success = await attemptAuth();
         }
@@ -289,12 +284,22 @@ const Shop = ({ language }) => {
         }
     };
 
-    const handleSidebarItemClick = (id) => {
+    const handleSidebarItemClick = async (id) => {
         if (id === 'profile') {
             if (currentUser) {
                 setView('profile');
             } else {
-                setIsAuthDrawerOpen(true);
+                setLoading(true);
+                await checkAuth();
+                setLoading(false);
+
+                // Read fresh state from localStorage if needed, or rely on state update
+                const saved = localStorage.getItem('punyo_user');
+                if (saved) {
+                    setView('profile');
+                } else {
+                    setIsAuthDrawerOpen(true);
+                }
             }
         } else if (id === 'favorites') {
             setSelectedCategory(null);
