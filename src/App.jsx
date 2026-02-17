@@ -44,9 +44,8 @@ function App() {
     const telegram = window.Telegram?.WebApp;
 
     useEffect(() => {
-        // Strict environment check: Must have initData and be inside Telegram WebApp
-        // initData is only present when opened as a Telegram WebApp
-        const isTgEnv = telegram?.initData && telegram?.platform !== 'unknown';
+        // Environment check: Must have initData from Telegram
+        const isTgEnv = !!telegram?.initData;
 
         // On localhost/127.0.0.1, we allow browser access for development
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
