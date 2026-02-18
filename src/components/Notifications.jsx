@@ -1,15 +1,8 @@
 import React from 'react';
 import './Notifications.css';
 
-export default function Notifications({ notifications, language, onMarkRead }) {
-    if (!notifications || notifications.length === 0) {
-        return (
-            <div className="notifications-view empty">
-                <div className="empty-icon">🔔</div>
-                <p>{language === 'ru' ? 'Uvedomleniy poka net' : 'Hozircha bildirishnomalar yo\'q'}</p>
-            </div>
-        );
-    }
+export default function Notifications({ notifications, language, onMarkRead, onBack }) {
+    const isEmpty = !notifications || notifications.length === 0;
 
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
@@ -23,26 +16,37 @@ export default function Notifications({ notifications, language, onMarkRead }) {
     };
 
     return (
-        <div className="notifications-view">
-            <h2 className="view-title">
-                {language === 'ru' ? 'Uvedomleniya' : 'Bildirishnomalar'}
-            </h2>
-            <div className="notifications-list">
-                {notifications.map(notification => (
-                    <div
-                        key={notification.id}
-                        className={`notification-item ${notification.is_read ? 'read' : 'unread'}`}
-                        onClick={() => !notification.is_read && onMarkRead(notification.id)}
-                    >
-                        <div className="notification-header">
-                            <h3 className="notification-title">{notification.title}</h3>
-                            <span className="notification-time">{formatDate(notification.created_at)}</span>
-                        </div>
-                        <p className="notification-desc">{notification.description}</p>
-                        {!notification.is_read && <div className="unread-dot"></div>}
-                    </div>
-                ))}
+        <div className={`notifications-view ${isEmpty ? 'empty' : ''}`}>
+            <div className="view-header">
+                <button className="back-btn" onClick={onBack}>←</button>
+                <h2 className="view-title">
+                    {language === 'ru' ? 'Uvedomleniya' : 'Bildirishnomalar'}
+                </h2>
             </div>
+
+            {isEmpty ? (
+                <div className="empty-state">
+                    <div className="empty-icon">🔔</div>
+                    <p>{language === 'ru' ? 'Uvedomleniy poka net' : 'Hozircha bildirishnomalar yo\'q'}</p>
+                </div>
+            ) : (
+                <div className="notifications-list">
+                    {notifications.map(notification => (
+                        <div
+                            key={notification.id}
+                            className={`notification-item ${notification.is_read ? 'read' : 'unread'}`}
+                            onClick={() => !notification.is_read && onMarkRead(notification.id)}
+                        >
+                            <div className="notification-header">
+                                <h3 className="notification-title">{notification.title}</h3>
+                                <span className="notification-time">{formatDate(notification.created_at)}</span>
+                            </div>
+                            <p className="notification-desc">{notification.description}</p>
+                            {!notification.is_read && <div className="unread-dot"></div>}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

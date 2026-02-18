@@ -575,6 +575,7 @@ const Shop = ({ language }) => {
                     notifications={notifications}
                     language={language}
                     onMarkRead={handleMarkAsRead}
+                    onBack={() => setView('home')}
                 />
             );
         }
