@@ -395,7 +395,12 @@ const Shop = ({ language }) => {
 
     const filteredProducts = allProducts.filter(product => {
         const name = language === 'ru' ? (product.name_ru || product.name) : product.name;
-        return name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (view === 'category_products' && selectedCategory) {
+            return matchesSearch && product.category === selectedCategory.id;
+        }
+        return matchesSearch;
     });
 
     if (loading) {
