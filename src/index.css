@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --primary-bg: #f8f9fc;
-  --header-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --accent-color: #3b82f6;
-  --text-main: #1e293b;
+  --primary-bg: #f0f4f8;
+  --header-bg: linear-gradient(135deg, #112b3c 0%, #1b3a5b 100%);
+  --accent-color: #e15a13;
+  --brand-gold: #f5b000;
+  --text-main: #112b3c;
   --text-muted: #64748b;
   --card-bg: #ffffff;
   --border-radius: 16px;

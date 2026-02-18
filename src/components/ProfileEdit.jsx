@@ -111,7 +111,7 @@ export default function ProfileEdit({ user, onBack, onSave, language }) {
             </div>
 
             <div className="profile-footer">
-                @PUNYOMARKET_BOT
+                @HUMO_TEZKOR_BOT
             </div>
         </div>
     );

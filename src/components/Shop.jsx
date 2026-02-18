@@ -617,7 +617,7 @@ const Shop = ({ language }) => {
                     <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>
                         <span className="menu-icon">☰</span>
                     </button>
-                    <h1>PUNYO MARKET</h1>
+                    <h1>HUMO TEZKOR</h1>
                     <div className="header-placeholder"></div>
                 </div>
                 <p className="subtitle">mini ilova</p>

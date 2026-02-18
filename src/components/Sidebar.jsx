@@ -17,8 +17,10 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <div className="sidebar-brand">
-                        <div className="brand-logo">🛒</div>
-                        <div className="brand-name">Punyo Market</div>
+                        <div className="brand-logo">
+                            <img src="/logo.png" alt="Humo Tezkor" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
+                        </div>
+                        <div className="brand-name">HUMO TEZKOR</div>
                     </div>
                 </div>
 

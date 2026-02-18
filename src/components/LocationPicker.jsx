@@ -27,7 +27,7 @@ const LocationPicker = ({ onAutoLocation, onManualLocation, onCancel, language }
                 </div>
 
                 <div className="location-footer">
-                    @PUNYOMARKET_BOT
+                    @HUMO_TEZKOR_BOT
                 </div>
             </div>
         </div>
