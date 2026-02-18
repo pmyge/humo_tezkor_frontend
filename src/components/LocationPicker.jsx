@@ -21,11 +21,8 @@ const LocationPicker = ({ onAutoLocation, onManualLocation, onCancel, language }
                 </p>
 
                 <div className="location-actions">
-                    <button className="btn-primary" onClick={onAutoLocation}>
-                        {language === 'ru' ? 'Определить автоматически' : 'Joylashuvni avtomatik hisoblash'}
-                    </button>
-                    <button className="btn-outline" onClick={onManualLocation}>
-                        {language === 'ru' ? 'Указать на карте' : 'Manzilni qo\'lda ko\'rsatish'}
+                    <button className="btn-primary" onClick={onManualLocation}>
+                        {language === 'ru' ? 'Указать на карте' : 'Joylashuvni belgilash'}
                     </button>
                 </div>
 
