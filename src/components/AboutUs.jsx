@@ -2,12 +2,21 @@ import React from 'react';
 import './AboutUs.css';
 
 export default function AboutUs({ about, language, onBack }) {
+    const getLocalizedAddress = () => {
+        if (!about) return '';
+        if (language === 'ru') return about.address_ru || about.address || '';
+        return about.address_uz || about.address || '';
+    };
+
     const handleMapClick = () => {
-        if (!about?.address) return;
-        const encodedAddress = encodeURIComponent(about.address);
+        const address = getLocalizedAddress();
+        if (!address) return;
+        const encodedAddress = encodeURIComponent(address);
         const yandexMapsUrl = `https://yandex.uz/maps/?text=${encodedAddress}`;
         window.open(yandexMapsUrl, '_blank');
     };
+
+    const localizedAddress = getLocalizedAddress();
 
     return (
         <div className="au-wrapper">
@@ -17,8 +26,8 @@ export default function AboutUs({ about, language, onBack }) {
                     <span className="au-back-arrow">←</span>
                 </button>
                 <div className="au-header-text">
-                    <h1>{language === 'ru' ? 'O NAS' : 'BIZ HAQIMIZDA'}</h1>
-                    <p>{language === 'ru' ? 'Informatsiya o magazine' : 'Do\'kon haqida ma\'lumot'}</p>
+                    <h1>{language === 'ru' ? 'О НАС' : 'BIZ HAQIMIZDA'}</h1>
+                    <p>{language === 'ru' ? 'Информация о магазине' : 'Do\'kon haqida ma\'lumot'}</p>
                 </div>
             </header>
 
@@ -26,7 +35,7 @@ export default function AboutUs({ about, language, onBack }) {
                 {!about ? (
                     <div className="au-loader-center">
                         <div className="au-spinner"></div>
-                        <p>{language === 'ru' ? 'Zagruzka...' : 'Yuklanmoqda...'}</p>
+                        <p>{language === 'ru' ? 'Загрузка...' : 'Yuklanmoqda...'}</p>
                     </div>
                 ) : (
                     <div className="au-content-stack">
@@ -35,7 +44,7 @@ export default function AboutUs({ about, language, onBack }) {
                             <h2 className="au-shop-title">HUMO TEZKOR</h2>
                             <p className="au-shop-desc">
                                 {language === 'ru'
-                                    ? 'Vash nadyojniy partner v mire pokupok'
+                                    ? 'Ваш надежный партнер в мире покупок'
                                     : 'Xaridlar olamidagi ishonchli hamkoringiz'}
                             </p>
                         </div>
@@ -45,7 +54,7 @@ export default function AboutUs({ about, language, onBack }) {
                             <div className="au-card-item">
                                 <div className="au-icon-box">📞</div>
                                 <div className="au-card-body">
-                                    <span className="au-label">{language === 'ru' ? 'Telefon' : 'Telefon'}</span>
+                                    <span className="au-label">{language === 'ru' ? 'Телефон' : 'Telefon raqami'}</span>
                                     <a href={`tel:${about.phone_number}`} className="au-value">{about.phone_number}</a>
                                 </div>
                             </div>
@@ -53,7 +62,7 @@ export default function AboutUs({ about, language, onBack }) {
                             <div className="au-card-item">
                                 <div className="au-icon-box">✉️</div>
                                 <div className="au-card-body">
-                                    <span className="au-label">{language === 'ru' ? 'Email' : 'Email'}</span>
+                                    <span className="au-label">{language === 'ru' ? 'Email' : 'Email manzili'}</span>
                                     <a href={`mailto:${about.email}`} className="au-value">{about.email}</a>
                                 </div>
                             </div>
@@ -64,8 +73,8 @@ export default function AboutUs({ about, language, onBack }) {
                             <div className="au-card-item no-border">
                                 <div className="au-icon-box orange">📍</div>
                                 <div className="au-card-body">
-                                    <span className="au-label">{language === 'ru' ? 'Nash Adres' : 'Bizning Manzil'}</span>
-                                    <p className="au-value-text">{about.address}</p>
+                                    <span className="au-label">{language === 'ru' ? 'Наш Адрес' : 'Bizning Manzil'}</span>
+                                    <p className="au-value-text">{localizedAddress}</p>
                                 </div>
                             </div>
 
@@ -77,7 +86,7 @@ export default function AboutUs({ about, language, onBack }) {
                                 />
                                 <div className="au-map-overlay">
                                     <div className="au-map-btn">
-                                        <span>{language === 'ru' ? 'Otkrit v Navigatore' : 'Navigatorda ochish'}</span>
+                                        <span>{language === 'ru' ? 'Открыть в Навигаторе' : 'Navigatorda ochish'}</span>
                                         <span className="au-btn-icon">🗺️</span>
                                     </div>
                                 </div>

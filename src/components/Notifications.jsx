@@ -38,10 +38,18 @@ export default function Notifications({ notifications, language, onMarkRead, onB
                             onClick={() => !notification.is_read && onMarkRead(notification.id)}
                         >
                             <div className="notification-header">
-                                <h3 className="notification-title">{notification.title}</h3>
+                                <h3 className="notification-title">
+                                    {language === 'ru'
+                                        ? (notification.title_ru || notification.title)
+                                        : (notification.title_uz || notification.title)}
+                                </h3>
                                 <span className="notification-time">{formatDate(notification.created_at)}</span>
                             </div>
-                            <p className="notification-desc">{notification.description}</p>
+                            <p className="notification-desc">
+                                {language === 'ru'
+                                    ? (notification.description_ru || notification.description)
+                                    : (notification.description_uz || notification.description)}
+                            </p>
                             {!notification.is_read && <div className="unread-dot"></div>}
                         </div>
                     ))}
