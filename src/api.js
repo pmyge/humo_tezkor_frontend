@@ -37,6 +37,7 @@ export const getImageUrl = (path) => {
 };
 
 export const api = {
+    getImageUrl,
     async getCategories() {
         const response = await fetchWithBypass(`${API_BASE_URL}/products/categories/`);
         return response.json();
@@ -159,14 +160,28 @@ export const api = {
         return response.json();
     },
 
-    async sendChatMessage(telegramUserId, message) {
-        const response = await fetchWithBypass(`${API_BASE_URL}/chat/send/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+    async sendChatMessage(telegramUserId, message, image = null) {
+        let body;
+        let headers = {};
+
+        if (image) {
+            body = new FormData();
+            body.append('telegram_user_id', telegramUserId);
+            if (message) body.append('message', message);
+            body.append('image', image);
+            // Browser sets Content-Type to multipart/form-data with boundary automatically for FormData
+        } else {
+            body = JSON.stringify({
                 telegram_user_id: telegramUserId,
                 message: message
-            })
+            });
+            headers['Content-Type'] = 'application/json';
+        }
+
+        const response = await fetchWithBypass(`${API_BASE_URL}/chat/send/`, {
+            method: 'POST',
+            headers: headers,
+            body: body
         });
         return response.json();
     },

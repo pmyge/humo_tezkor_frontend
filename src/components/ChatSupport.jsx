@@ -39,19 +39,25 @@ export default function ChatSupport({ user, language, onBack }) {
         }
     };
 
-    const handleSendMessage = async (e) => {
-        e.preventDefault();
-        if (!newMessage.trim() || !user?.telegram_user_id) return;
+    const handleSendMessage = async (e, imageFile = null) => {
+        if (e) e.preventDefault();
+        if (!newMessage.trim() && !imageFile && !user?.telegram_user_id) return;
 
         const currentMsg = newMessage;
-        setNewMessage('');
+        if (!imageFile) setNewMessage('');
 
         try {
-            const response = await api.sendChatMessage(user.telegram_user_id, currentMsg);
+            const response = await api.sendChatMessage(user.telegram_user_id, currentMsg, imageFile);
             setMessages(prev => [...prev, response]);
         } catch (error) {
             console.error('Failed to send message:', error);
-            // Optionally restore message to input if send fails
+        }
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            await handleSendMessage(null, file);
         }
     };
 
@@ -97,7 +103,12 @@ export default function ChatSupport({ user, language, onBack }) {
                                     className={`cs-message-row ${msg.is_from_admin ? 'admin' : 'user'}`}
                                 >
                                     <div className="cs-message-bubble">
-                                        <p className="cs-message-text">{msg.message}</p>
+                                        {msg.image && (
+                                            <div className="cs-message-image">
+                                                <img src={api.getImageUrl(msg.image)} alt="Attached" onClick={() => window.open(api.getImageUrl(msg.image), '_blank')} />
+                                            </div>
+                                        )}
+                                        {msg.message && <p className="cs-message-text">{msg.message}</p>}
                                         <span className="cs-message-time">{formatTime(msg.created_at)}</span>
                                     </div>
                                 </div>
@@ -109,8 +120,15 @@ export default function ChatSupport({ user, language, onBack }) {
             </div>
 
             {/* Input Footer */}
-            <form className="cs-footer" onSubmit={handleSendMessage}>
-                <button type="button" className="cs-attach-btn">
+            <form className="cs-footer" onSubmit={(e) => handleSendMessage(e)}>
+                <input
+                    type="file"
+                    id="cs-file-input"
+                    hidden
+                    accept="image/*"
+                    onChange={handleFileChange}
+                />
+                <button type="button" className="cs-attach-btn" onClick={() => document.getElementById('cs-file-input').click()}>
                     <span className="cs-attach-icon">📎</span>
                 </button>
                 <input
