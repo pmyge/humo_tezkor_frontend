@@ -14,6 +14,7 @@ import LocationPicker from './LocationPicker';
 import MapPicker from './MapPicker';
 import SuccessModal from './SuccessModal';
 import Pagination from './Pagination';
+import ChatSupport from './ChatSupport';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
@@ -612,6 +613,10 @@ const Shop = ({ language }) => {
             return <AboutUs about={aboutData} language={language} onBack={() => setView('home')} />;
         }
 
+        if (view === 'chat' && currentUser) {
+            return <ChatSupport user={currentUser} language={language} onBack={() => setView('home')} />;
+        }
+
         if (view === 'favorites') {
             const favoriteProducts = allProducts.filter(p => favorites.includes(p.id));
             const itemsPerPage = 10;
@@ -750,7 +755,15 @@ const Shop = ({ language }) => {
                         <span className="humo">HUMO</span>
                         <span className="tezkor">TEZKOR</span>
                     </h1>
-                    <div className="header-placeholder"></div>
+                    <button className="chat-btn" onClick={() => {
+                        if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                            setIsAuthDrawerOpen(true);
+                        } else {
+                            setView('chat');
+                        }
+                    }}>
+                        <span className="chat-icon">💬</span>
+                    </button>
                 </div>
                 <p className="subtitle">mini ilova</p>
             </header>

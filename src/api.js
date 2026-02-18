@@ -152,4 +152,22 @@ export const api = {
         const response = await fetchWithBypass(`${API_BASE_URL}/users/about/`);
         return response.json();
     },
+
+    // Chat Support
+    async getChatMessages(telegramUserId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/chat/messages/?telegram_user_id=${telegramUserId}`);
+        return response.json();
+    },
+
+    async sendChatMessage(telegramUserId, message) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/chat/send/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                telegram_user_id: telegramUserId,
+                message: message
+            })
+        });
+        return response.json();
+    },
 };
