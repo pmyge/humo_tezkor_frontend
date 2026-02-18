@@ -148,8 +148,8 @@ export const api = {
         return response.json();
     },
 
-    getAbout: async () => {
-        const response = await fetch(`${API_BASE_URL}/users/about/`);
+    async getAbout() {
+        const response = await fetchWithBypass(`${API_BASE_URL}/users/about/`);
         return response.json();
     },
 };
