@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getImageUrl } from '../api';
 import './ProductDetail.css';
 
-const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavorite, onAddToCart }) => {
+const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavorite, onAddToCart, selectedLocation, onShowLocationPicker }) => {
     const [quantity, setQuantity] = useState(1);
 
     const isFavorite = favorites.includes(product.id);
@@ -51,6 +51,16 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                 )}
             </div>
 
+            <div className="detail-location-section">
+                <div className="location-info">
+                    <span className="loc-label">{language === 'ru' ? 'Адрес доставки:' : 'Yetkazib berish manzili:'}</span>
+                    <span className="loc-value">{selectedLocation ? selectedLocation.address : (language === 'ru' ? 'Не выбран' : 'Tanlanmagan')}</span>
+                </div>
+                <button className="change-loc-btn" onClick={onShowLocationPicker}>
+                    {selectedLocation ? (language === 'ru' ? 'Изменить' : 'O\'zgartirish') : (language === 'ru' ? 'Выбрать на карте' : 'Manzilni tanlash')}
+                </button>
+            </div>
+
             <div className="detail-actions-fixed">
                 <div className="quantity-selector">
                     <button className="qty-btn minus" onClick={handleDecrement}>−</button>
@@ -58,8 +68,9 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                     <button className="qty-btn plus" onClick={handleIncrement}>+</button>
                 </div>
                 <button
-                    className="add-to-cart-btn"
+                    className={`add-to-cart-btn ${!selectedLocation ? 'disabled' : ''}`}
                     onClick={handleAddToCartClick}
+                    disabled={!selectedLocation}
                 >
                     <span className="cart-icon">🛒</span>
                     {language === 'ru' ? 'В корзину' : 'Savatga'}

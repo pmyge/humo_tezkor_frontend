@@ -57,6 +57,7 @@ const Shop = ({ language }) => {
     const [showCartSuccess, setShowCartSuccess] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [pendingProduct, setPendingProduct] = useState(null);
 
     const updateCurrentUser = (user, source = 'local') => {
         if (user) {
@@ -393,6 +394,8 @@ const Shop = ({ language }) => {
                     favorites={favorites}
                     onToggleFavorite={toggleFavorite}
                     onAddToCart={handleAddToCart}
+                    selectedLocation={selectedLocation}
+                    onShowLocationPicker={() => setShowLocationPicker(true)}
                 />
             );
         }
@@ -408,7 +411,14 @@ const Shop = ({ language }) => {
                         language={language}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
-                        onProductClick={setSelectedProduct}
+                        onProductClick={(p) => {
+                            if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                                setPendingProduct(p);
+                                setIsAuthDrawerOpen(true);
+                            } else {
+                                setSelectedProduct(p);
+                            }
+                        }}
                     />
                 </div>
             );
@@ -444,7 +454,20 @@ const Shop = ({ language }) => {
                             ? (selectedCategory?.name_ru || selectedCategory?.name)?.toUpperCase()
                             : selectedCategory?.name?.toUpperCase()}
                     </div>
-                    <ProductGrid products={filteredProducts} language={language} />
+                    <ProductGrid
+                        products={filteredProducts}
+                        language={language}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                        onProductClick={(p) => {
+                            if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                                setPendingProduct(p);
+                                setIsAuthDrawerOpen(true);
+                            } else {
+                                setSelectedProduct(p);
+                            }
+                        }}
+                    />
                 </div>
             );
         }
@@ -490,7 +513,14 @@ const Shop = ({ language }) => {
                         language={language}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
-                        onProductClick={setSelectedProduct}
+                        onProductClick={(p) => {
+                            if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                                setPendingProduct(p);
+                                setIsAuthDrawerOpen(true);
+                            } else {
+                                setSelectedProduct(p);
+                            }
+                        }}
                     />
                 </div>
             );
@@ -516,7 +546,14 @@ const Shop = ({ language }) => {
                             onSelectCategory={setSelectedCategory}
                             favorites={favorites}
                             onToggleFavorite={toggleFavorite}
-                            onProductClick={setSelectedProduct}
+                            onProductClick={(p) => {
+                                if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                                    setPendingProduct(p);
+                                    setIsAuthDrawerOpen(true);
+                                } else {
+                                    setSelectedProduct(p);
+                                }
+                            }}
                         />
                     ))}
                 </div>
@@ -564,6 +601,9 @@ const Shop = ({ language }) => {
                         // Phone registered, now move to location step
                         setShowLocationPicker(true);
                         window._pendingLocationAfterAuth = false;
+                    } else if (pendingProduct) {
+                        setSelectedProduct(pendingProduct);
+                        setPendingProduct(null);
                     } else {
                         setView('profile');
                     }
@@ -576,16 +616,6 @@ const Shop = ({ language }) => {
                         <span className="menu-icon">☰</span>
                     </button>
                     <h1>PUNYO MARKET</h1>
-                    <button className="location-header-btn" onClick={() => {
-                        if (!currentUser || !currentUser.phone_number) {
-                            window._pendingLocationAfterAuth = true;
-                            setIsAuthDrawerOpen(true);
-                        } else {
-                            setShowLocationPicker(true);
-                        }
-                    }}>
-                        <span className="location-icon">📍</span>
-                    </button>
                 </div>
                 <p className="subtitle">mini ilova</p>
             </header>
