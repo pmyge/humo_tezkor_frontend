@@ -104,15 +104,15 @@ const Shop = ({ language }) => {
     }, []);
 
     useEffect(() => {
-        if (user) {
+        if (currentUser) {
             loadNotifications();
         }
-    }, [user?.telegram_user_id]);
+    }, [currentUser?.telegram_user_id]);
 
     const loadNotifications = async () => {
-        if (!user?.telegram_user_id) return;
+        if (!currentUser?.telegram_user_id) return;
         try {
-            const data = await api.getNotifications(user.telegram_user_id);
+            const data = await api.getNotifications(currentUser.telegram_user_id);
             setNotifications(data);
             setUnreadCount(data.filter(n => !n.is_read).length);
         } catch (error) {
@@ -121,9 +121,9 @@ const Shop = ({ language }) => {
     };
 
     const handleMarkAsRead = async (notificationId) => {
-        if (!user?.telegram_user_id) return;
+        if (!currentUser?.telegram_user_id) return;
         try {
-            await api.markNotificationRead(user.telegram_user_id, notificationId);
+            await api.markNotificationRead(currentUser.telegram_user_id, notificationId);
             setNotifications(prev => prev.map(n =>
                 n.id === notificationId ? { ...n, is_read: true } : n
             ));
