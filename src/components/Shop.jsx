@@ -393,6 +393,9 @@ const Shop = ({ language }) => {
             setSelectedProduct(null);
             setFavoritesPage(1); // Reset to first page
             setView('favorites');
+        } else if (id === 'notifications') {
+            setView('notifications');
+            loadNotifications();
         }
     };
 
@@ -562,6 +565,16 @@ const Shop = ({ language }) => {
                     user={currentUser}
                     language={language}
                     onBack={() => setView('home')}
+                />
+            );
+        }
+
+        if (view === 'notifications') {
+            return (
+                <Notifications
+                    notifications={notifications}
+                    language={language}
+                    onMarkRead={handleMarkAsRead}
                 />
             );
         }
