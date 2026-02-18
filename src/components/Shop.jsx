@@ -411,6 +411,9 @@ const Shop = ({ language }) => {
         } else if (id === 'notifications') {
             setView('notifications');
             loadNotifications();
+        } else if (id === 'about') {
+            setView('about');
+            loadAboutData();
         }
     };
 
