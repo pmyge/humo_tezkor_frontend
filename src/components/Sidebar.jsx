@@ -16,12 +16,10 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
             <div className={`sidebar-overlay ${isOpen ? 'show' : ''}`} onClick={onClose}></div>
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <div className="sidebar-brand">
-                        <div className="brand-logo">
-                            <img src="/logo.png" alt="Humo Tezkor" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
-                        </div>
-                        <div className="brand-name">HUMO TEZKOR</div>
+                    <div className="brand-logo-container">
+                        <img src="/logo.png" alt="Humo Tezkor" className="sidebar-logo-img" />
                     </div>
+                    <div className="brand-name">HUMO TEZKOR</div>
                 </div>
 
                 <nav className="sidebar-nav">
