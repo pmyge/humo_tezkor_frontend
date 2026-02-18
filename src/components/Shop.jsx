@@ -96,6 +96,7 @@ const Shop = ({ language }) => {
 
     useEffect(() => {
         loadCategories();
+        loadAllProducts();
         checkAuth();
     }, []);
 
@@ -373,10 +374,20 @@ const Shop = ({ language }) => {
         }
     };
 
+    const loadAllProducts = async () => {
+        try {
+            const data = await api.getAllProducts();
+            setAllProducts(data);
+        } catch (error) {
+            console.error('Error loading all products:', error);
+        }
+    };
+
     const loadCategoryProducts = async (categoryId) => {
         try {
             const data = await api.getCategoryProducts(categoryId);
-            setAllProducts(data);
+            // Also update allProducts pool if needed, or just set filtered view
+            // For now, we use allProducts as the source for search and favorites
         } catch (error) {
             console.error('Error loading products:', error);
         }
