@@ -1,7 +1,7 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user }) => {
+const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user, unreadCount = 0 }) => {
     const menuItems = [
         {
             id: 'profile',
@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
             ),
-            label: language === 'ru' ? 'Uvedomleniya' : 'Bildirishmalar'
+            label: language === 'ru' ? 'Uvedomleniya' : 'Bildirishnomalar'
         },
         {
             id: 'about',
@@ -74,7 +74,12 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                             onClose();
                         }}>
                             <span className="item-icon">{item.icon}</span>
-                            <span className="item-label">{item.label}</span>
+                            <span className="item-label">
+                                {item.label}
+                                {item.id === 'notifications' && unreadCount > 0 && (
+                                    <span className="unread-badge">{unreadCount}</span>
+                                )}
+                            </span>
                         </div>
                     ))}
                 </nav>

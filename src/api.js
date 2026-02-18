@@ -132,6 +132,23 @@ export const api = {
             body: JSON.stringify(orderData)
         });
         return response.json();
+    },
+
+    async getNotifications(telegramUserId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/users/notifications/?telegram_user_id=${telegramUserId}`);
+        return response.json();
+    },
+
+    async markNotificationRead(telegramUserId, notificationId) {
+        const response = await fetchWithBypass(`${API_BASE_URL}/users/notifications/mark-read/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                telegram_user_id: telegramUserId,
+                notification_id: notificationId
+            })
+        });
+        return response.json();
     }
 }
 

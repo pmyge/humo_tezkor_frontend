@@ -87,7 +87,18 @@
 }
 
 .sidebar-item:active {
-    background: #f8fafc;
+    background: rgba(8, 37, 73, 0.1);
+}
+
+.unread-badge {
+    background: #ff4d4f;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
 }
 
 .item-icon {

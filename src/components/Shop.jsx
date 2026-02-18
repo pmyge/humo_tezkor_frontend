@@ -6,6 +6,7 @@ import CategorySection from './CategorySection';
 import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
 import MyOrders from './MyOrders';
+import Notifications from './Notifications';
 import ProfileEdit from './ProfileEdit';
 import ProductDetail from './ProductDetail';
 import LocationPicker from './LocationPicker';
@@ -60,6 +61,8 @@ const Shop = ({ language }) => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [pendingProduct, setPendingProduct] = useState(null);
     const [favoritesPage, setFavoritesPage] = useState(1);
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
     const [categoryPage, setCategoryPage] = useState(1);
 
     const updateCurrentUser = (user, source = 'local') => {
@@ -99,6 +102,36 @@ const Shop = ({ language }) => {
         loadAllProducts();
         checkAuth();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            loadNotifications();
+        }
+    }, [user?.telegram_user_id]);
+
+    const loadNotifications = async () => {
+        if (!user?.telegram_user_id) return;
+        try {
+            const data = await api.getNotifications(user.telegram_user_id);
+            setNotifications(data);
+            setUnreadCount(data.filter(n => !n.is_read).length);
+        } catch (error) {
+            console.error('Error loading notifications:', error);
+        }
+    };
+
+    const handleMarkAsRead = async (notificationId) => {
+        if (!user?.telegram_user_id) return;
+        try {
+            await api.markNotificationRead(user.telegram_user_id, notificationId);
+            setNotifications(prev => prev.map(n =>
+                n.id === notificationId ? { ...n, is_read: true } : n
+            ));
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
 
     const checkAuth = async () => {
         let retries = 0;
