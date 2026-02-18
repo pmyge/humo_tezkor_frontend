@@ -83,13 +83,13 @@
     width: 30px;
     height: 30px;
     border-radius: 50% 50% 50% 0;
-    background: #818cf8;
+    background: var(--brand-tezkor);
     position: absolute;
     transform: rotate(-45deg);
     left: 50%;
     top: 50%;
     margin: -15px 0 0 -15px;
-    box-shadow: 0 4px 10px rgba(129, 140, 248, 0.5);
+    box-shadow: 0 4px 10px rgba(198, 53, 6, 0.5);
 }
 
 .marker-pin::after {
@@ -181,7 +181,7 @@
 }
 
 .confirm-location-btn {
-    background: #818cf8;
+    background: var(--brand-tezkor);
     color: white;
     border: none;
     border-radius: 18px;
@@ -189,13 +189,19 @@
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 8px 20px rgba(129, 140, 248, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(198, 53, 6, 0.2);
 }
 
-.confirm-location-btn:active {
+.confirm-location-btn:hover:not(:disabled) {
+    background: var(--brand-tezkor-light);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(198, 53, 6, 0.3);
+}
+
+.confirm-location-btn:active:not(:disabled) {
     transform: scale(0.97);
-    box-shadow: 0 4px 10px rgba(129, 140, 248, 0.2);
+    box-shadow: 0 4px 10px rgba(198, 53, 6, 0.2);
 }
 
 .confirm-location-btn:disabled {

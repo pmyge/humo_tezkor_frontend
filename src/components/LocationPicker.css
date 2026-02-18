@@ -65,9 +65,10 @@
 
 .location-pin {
     font-size: 80px;
-    filter: drop-shadow(0 10px 15px rgba(99, 102, 241, 0.3));
+    filter: drop-shadow(0 10px 15px rgba(198, 53, 6, 0.3));
     z-index: 2;
     position: relative;
+    color: var(--brand-tezkor);
 }
 
 .location-pulse {
@@ -106,7 +107,7 @@
 }
 
 .btn-primary {
-    background: #6366f1;
+    background: var(--brand-tezkor);
     color: white;
     border: none;
     border-radius: 14px;
@@ -114,17 +115,22 @@
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(198, 53, 6, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--brand-tezkor-light);
+    transform: translateY(-1px);
 }
 
 .btn-primary:active {
     transform: scale(0.98);
-    background: #4f46e5;
 }
 
 .btn-outline {
     background: white;
-    color: #6366f1;
+    color: var(--brand-humo);
     border: 1.5px solid #e2e8f0;
     border-radius: 14px;
     padding: 16px;
@@ -134,8 +140,13 @@
     transition: all 0.2s;
 }
 
-.btn-outline:active {
+.btn-outline:hover {
     background: #f8fafc;
+    border-color: var(--brand-humo);
+}
+
+.btn-outline:active {
+    background: #f1f5f9;
 }
 
 .location-footer {

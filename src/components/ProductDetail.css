@@ -128,8 +128,16 @@
 }
 
 .qty-btn.plus {
-    background: #6366f1;
+    background: var(--brand-tezkor);
     color: white;
+}
+
+.qty-btn:hover:not(.plus) {
+    background: #f1f5f9;
+}
+
+.qty-btn.plus:hover {
+    background: var(--brand-tezkor-light);
 }
 
 .qty-value {
@@ -140,7 +148,7 @@
 
 .add-to-cart-btn {
     flex: 1;
-    background: #6366f1;
+    background: var(--brand-tezkor);
     color: white;
     border: none;
     border-radius: 14px;
@@ -151,12 +159,18 @@
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(198, 53, 6, 0.2);
 }
 
-.add-to-cart-btn:active {
+.add-to-cart-btn:hover:not(.disabled) {
+    background: var(--brand-tezkor-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(198, 53, 6, 0.3);
+}
+
+.add-to-cart-btn:active:not(.disabled) {
     transform: scale(0.97);
-    background: #4f46e5;
 }
 
 .location-selection-container {
@@ -206,7 +220,7 @@
 .loc-tag {
     font-size: 10px;
     font-weight: 800;
-    color: #6366f1;
+    color: var(--brand-tezkor);
     letter-spacing: 1px;
 }
 

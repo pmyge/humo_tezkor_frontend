@@ -42,8 +42,12 @@
 }
 
 .tab-btn.active {
-    background: #7c3aed;
+    background: var(--brand-humo);
     color: white;
+}
+
+.tab-btn:hover:not(.active) {
+    background: #e2e8f0;
 }
 
 .orders-content {
