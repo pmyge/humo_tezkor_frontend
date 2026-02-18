@@ -139,17 +139,17 @@ export const api = {
         return response.json();
     },
 
-    async markNotificationRead(telegramUserId, notificationId) {
-        const response = await fetchWithBypass(`${API_BASE_URL}/users/notifications/mark-read/`, {
+    markNotificationRead: async (telegram_user_id, notificationId) => {
+        const response = await fetch(`${API_BASE_URL}/users/notifications/mark-read/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                telegram_user_id: telegramUserId,
-                notification_id: notificationId
-            })
+            body: JSON.stringify({ telegram_user_id, notification_id: notificationId })
         });
         return response.json();
-    }
-}
+    },
 
-
+    getAbout: async () => {
+        const response = await fetch(`${API_BASE_URL}/users/about/`);
+        return response.json();
+    },
+};

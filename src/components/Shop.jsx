@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 import AuthDrawer from './AuthDrawer';
 import MyOrders from './MyOrders';
 import Notifications from './Notifications';
+import AboutUs from './AboutUs';
 import ProfileEdit from './ProfileEdit';
 import ProductDetail from './ProductDetail';
 import LocationPicker from './LocationPicker';
@@ -63,6 +64,20 @@ const Shop = ({ language }) => {
     const [favoritesPage, setFavoritesPage] = useState(1);
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [aboutData, setAboutData] = useState(null);
+
+    useEffect(() => {
+        loadAboutData();
+    }, []);
+
+    const loadAboutData = async () => {
+        try {
+            const data = await api.getAbout();
+            setAboutData(data);
+        } catch (error) {
+            console.error('Failed to load about data:', error);
+        }
+    };
     const [categoryPage, setCategoryPage] = useState(1);
 
     const updateCurrentUser = (user, source = 'local') => {
@@ -578,6 +593,10 @@ const Shop = ({ language }) => {
                     onBack={() => setView('home')}
                 />
             );
+        }
+
+        if (view === 'about') {
+            return <AboutUs about={aboutData} language={language} onBack={() => setView('home')} />;
         }
 
         if (view === 'favorites') {
