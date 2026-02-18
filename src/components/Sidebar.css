@@ -49,12 +49,12 @@
 }
 
 .brand-logo-container {
-    width: 80px;
-    height: 80px;
+    width: 140px;
+    height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .sidebar-logo-img {

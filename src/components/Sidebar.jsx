@@ -20,7 +20,6 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                         <div className="brand-logo-container">
                             <img src="/logo.png" alt="Humo Tezkor" className="sidebar-logo-img" />
                         </div>
-                        <div className="brand-name">HUMO TEZKOR</div>
                     </div>
                 </div>
 
