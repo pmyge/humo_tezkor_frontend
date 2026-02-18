@@ -11,6 +11,7 @@ import ProductDetail from './ProductDetail';
 import LocationPicker from './LocationPicker';
 import MapPicker from './MapPicker';
 import SuccessModal from './SuccessModal';
+import Pagination from './Pagination';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
@@ -58,6 +59,8 @@ const Shop = ({ language }) => {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [pendingProduct, setPendingProduct] = useState(null);
+    const [favoritesPage, setFavoritesPage] = useState(1);
+    const [categoryPage, setCategoryPage] = useState(1);
 
     const updateCurrentUser = (user, source = 'local') => {
         if (user) {
@@ -182,6 +185,7 @@ const Shop = ({ language }) => {
     useEffect(() => {
         if (selectedCategory) {
             setView('category_products');
+            setCategoryPage(1); // Reset to first page
             loadCategoryProducts(selectedCategory.id);
         } else {
             setView('home');
@@ -353,6 +357,7 @@ const Shop = ({ language }) => {
         } else if (id === 'favorites') {
             setSelectedCategory(null);
             setSelectedProduct(null);
+            setFavoritesPage(1); // Reset to first page
             setView('favorites');
         }
     };
@@ -448,6 +453,10 @@ const Shop = ({ language }) => {
         }
 
         if (view === 'category_products' && selectedCategory) {
+            const itemsPerPage = 12;
+            const startIndex = (categoryPage - 1) * itemsPerPage;
+            const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
             return (
                 <div className="detail-view">
                     <div className="category-title">
@@ -457,7 +466,7 @@ const Shop = ({ language }) => {
                             : selectedCategory?.name?.toUpperCase()}
                     </div>
                     <ProductGrid
-                        products={filteredProducts}
+                        products={paginatedProducts}
                         language={language}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
@@ -469,6 +478,12 @@ const Shop = ({ language }) => {
                                 setSelectedProduct(p);
                             }
                         }}
+                    />
+                    <Pagination
+                        currentPage={categoryPage}
+                        totalItems={filteredProducts.length}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={setCategoryPage}
                     />
                 </div>
             );
@@ -504,26 +519,44 @@ const Shop = ({ language }) => {
 
         if (view === 'favorites') {
             const favoriteProducts = allProducts.filter(p => favorites.includes(p.id));
+            const itemsPerPage = 10;
+            const startIndex = (favoritesPage - 1) * itemsPerPage;
+            const paginatedFavorites = favoriteProducts.slice(startIndex, startIndex + itemsPerPage);
+
             return (
                 <div className="favorites-view">
                     <div className="category-title">
                         <span className="back-btn" onClick={() => setView('home')}>←</span>
-                        {language === 'ru' ? 'ИЗБРАННОЕ' : 'SEVIMLIKLAR'}
+                        {language === 'ru' ? 'ИЗБРАННОЕ' : 'SEVIMLILAR'}
                     </div>
-                    <ProductGrid
-                        products={favoriteProducts}
-                        language={language}
-                        favorites={favorites}
-                        onToggleFavorite={toggleFavorite}
-                        onProductClick={(p) => {
-                            if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
-                                setPendingProduct(p);
-                                setIsAuthDrawerOpen(true);
-                            } else {
-                                setSelectedProduct(p);
-                            }
-                        }}
-                    />
+                    {favoriteProducts.length > 0 ? (
+                        <>
+                            <ProductGrid
+                                products={paginatedFavorites}
+                                language={language}
+                                favorites={favorites}
+                                onToggleFavorite={toggleFavorite}
+                                onProductClick={(p) => {
+                                    if (!currentUser || !currentUser.phone_number || currentUser.phone_number === '-') {
+                                        setPendingProduct(p);
+                                        setIsAuthDrawerOpen(true);
+                                    } else {
+                                        setSelectedProduct(p);
+                                    }
+                                }}
+                            />
+                            <Pagination
+                                currentPage={favoritesPage}
+                                totalItems={favoriteProducts.length}
+                                itemsPerPage={itemsPerPage}
+                                onPageChange={setFavoritesPage}
+                            />
+                        </>
+                    ) : (
+                        <div className="empty-favorites">
+                            {language === 'ru' ? 'У вас пока нет избранных товаров.' : 'Sizda hozircha sevimlilar yo\'q.'}
+                        </div>
+                    )}
                 </div>
             );
         }
