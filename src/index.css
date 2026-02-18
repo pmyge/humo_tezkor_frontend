@@ -3,8 +3,9 @@
 :root {
   --primary-bg: #f8fafc;
   --brand-humo: #0A244D;
-  --brand-tezkor: #C63506;
-  --brand-tezkor-light: #d84315;
+  --brand-tezkor: #082549;
+  /* New Dark Blue */
+  --brand-tezkor-light: #163a6b;
   --header-bg: linear-gradient(135deg, #0A244D 0%, #162a50 100%);
   --accent-color: var(--brand-tezkor);
   --brand-gold: #f5b000;
@@ -70,8 +71,8 @@ body {
 }
 
 .brand-title .tezkor {
-  color: #C63506;
-  text-shadow: 0 0 10px rgba(198, 53, 6, 0.3);
+  color: #082549;
+  text-shadow: 0 0 10px rgba(8, 37, 73, 0.2);
 }
 
 .header-top {
@@ -271,7 +272,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  box-shadow: 0 10px 25px rgba(198, 53, 6, 0.3);
+  box-shadow: 0 10px 25px rgba(8, 37, 73, 0.2);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -279,12 +280,12 @@ body {
 .cart-total-btn:hover {
   background: var(--brand-tezkor-light);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(198, 53, 6, 0.4);
+  box-shadow: 0 12px 28px rgba(8, 37, 73, 0.3);
 }
 
 .cart-total-btn:active {
   transform: scale(0.98);
-  box-shadow: 0 5px 15px rgba(198, 53, 6, 0.2);
+  box-shadow: 0 5px 15px rgba(8, 37, 73, 0.15);
 }
 
 .cart-total-btn:disabled {
