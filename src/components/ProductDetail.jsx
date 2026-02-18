@@ -75,9 +75,9 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                     <button className="qty-btn plus" onClick={handleIncrement}>+</button>
                 </div>
                 <button
-                    className={`add-to-cart-btn ${!selectedLocation ? 'disabled' : ''}`}
+                    className={`add-to-cart-btn ${!selectedLocation?.address ? 'disabled' : ''}`}
                     onClick={handleAddToCartClick}
-                    disabled={!selectedLocation}
+                    disabled={!selectedLocation?.address}
                 >
                     <span className="cart-icon">🛒</span>
                     {language === 'ru' ? 'В корзину' : 'Savatga'}
