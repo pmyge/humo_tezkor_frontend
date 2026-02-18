@@ -242,8 +242,11 @@ const Shop = ({ language }) => {
                         submitFullOrder(loc);
                     }
                 }
+            }, (err) => {
+                console.error('Geolocation error:', err);
+                alert(language === 'ru' ? 'Не удалось получить ваше местоположение' : 'Joylashuvingizni aniqlab bo\'lmadi');
             });
-        } else {
+        } else if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
                 const loc = {
                     latitude: pos.coords.latitude,
@@ -264,7 +267,6 @@ const Shop = ({ language }) => {
     };
 
     const handleManualLocation = (data) => {
-        // data from Leaflet is { lat, lng, address }
         const normalizedLocation = {
             latitude: data.lat,
             longitude: data.lng,
