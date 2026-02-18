@@ -678,6 +678,7 @@ const Shop = ({ language }) => {
                 }}
                 onItemClick={handleSidebarItemClick}
                 user={currentUser}
+                unreadCount={unreadCount}
             />
 
             <AuthDrawer

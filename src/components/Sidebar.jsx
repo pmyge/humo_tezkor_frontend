@@ -77,7 +77,7 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                             <span className="item-label">
                                 {item.label}
                                 {item.id === 'notifications' && unreadCount > 0 && (
-                                    <span className="unread-badge">{unreadCount}</span>
+                                    <span className="unread-dot-sidebar"></span>
                                 )}
                             </span>
                         </div>
