@@ -73,9 +73,19 @@ const Shop = ({ language }) => {
     const loadAboutData = async () => {
         try {
             const data = await api.getAbout();
-            setAboutData(data);
+            if (data) {
+                setAboutData(data);
+            } else {
+                throw new Error('Empty response');
+            }
         } catch (error) {
             console.error('Failed to load about data:', error);
+            // Fallback default data to stop infinite loading if API fails
+            setAboutData({
+                phone_number: '+998XXXXXXXXX',
+                email: 'shop@example.com',
+                address: 'Do\'stlik, Jizzax'
+            });
         }
     };
     const [categoryPage, setCategoryPage] = useState(1);

@@ -27,7 +27,7 @@ export default function AboutUs({ about, language, onBack }) {
             ) : (
                 <div className="about-content">
                     <div className="shop-logo-container">
-                        <img src="/logo.png" alt="Shop Logo" className="shop-logo" />
+                        <img src="logo.png" alt="Shop Logo" className="shop-logo" />
                     </div>
 
                     <div className="info-card">
