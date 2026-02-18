@@ -429,7 +429,7 @@ const Shop = ({ language }) => {
                 <div className="all-categories-view">
                     <div className="category-title">
                         <span className="back-btn" onClick={() => setView('home')}>←</span>
-                        {language === 'ru' ? 'ВСЕ КАТЕГОРИИ' : 'BARCHA KATEGORIYALAR'}
+                        {language === 'ru' ? 'ВСE КАТЕГОРИИ' : 'BARCHA KATEGORIYALAR'}
                     </div>
                     <div className="categories-grid">
                         {categories.map(cat => (
@@ -616,6 +616,7 @@ const Shop = ({ language }) => {
                         <span className="menu-icon">☰</span>
                     </button>
                     <h1>PUNYO MARKET</h1>
+                    <div className="header-placeholder"></div>
                 </div>
                 <p className="subtitle">mini ilova</p>
             </header>

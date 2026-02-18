@@ -51,14 +51,21 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                 )}
             </div>
 
-            <div className="detail-location-section">
-                <div className="location-info">
-                    <span className="loc-label">{language === 'ru' ? 'Адрес доставки:' : 'Yetkazib berish manzili:'}</span>
-                    <span className="loc-value">{selectedLocation ? selectedLocation.address : (language === 'ru' ? 'Не выбран' : 'Tanlanmagan')}</span>
+            <div className="location-selection-container">
+                <div className="location-card" onClick={onShowLocationPicker}>
+                    <div className="loc-icon-box">
+                        <span className="loc-pin">📍</span>
+                    </div>
+                    <div className="loc-content">
+                        <span className="loc-tag">{language === 'ru' ? 'АДРЕС ДОСТАВКИ' : 'YETKAZIB BERISH MANZILI'}</span>
+                        <span className="loc-text">
+                            {selectedLocation ? selectedLocation.address : (language === 'ru' ? 'Нажмите, чтобы указать адрес' : 'Manzilni ko\'rsatish uchun bosing')}
+                        </span>
+                    </div>
+                    <div className="loc-arrow">
+                        {selectedLocation ? '➔' : '+'}
+                    </div>
                 </div>
-                <button className="change-loc-btn" onClick={onShowLocationPicker}>
-                    {selectedLocation ? (language === 'ru' ? 'Изменить' : 'O\'zgartirish') : (language === 'ru' ? 'Выбрать на карте' : 'Manzilni tanlash')}
-                </button>
             </div>
 
             <div className="detail-actions-fixed">
