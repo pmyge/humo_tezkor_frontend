@@ -10,6 +10,7 @@ import ProfileEdit from './ProfileEdit';
 import ProductDetail from './ProductDetail';
 import LocationPicker from './LocationPicker';
 import MapPicker from './MapPicker';
+import SuccessModal from './SuccessModal';
 import { api } from '../api';
 import './CategorySection.css';
 import './ProfileEdit.css';
@@ -55,6 +56,7 @@ const Shop = ({ language }) => {
     const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
     const [showCartSuccess, setShowCartSuccess] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const updateCurrentUser = (user, source = 'local') => {
         if (user) {
@@ -314,7 +316,7 @@ const Shop = ({ language }) => {
 
             const response = await api.createOrder(orderData);
             if (response.id) {
-                alert(language === 'ru' ? 'Заказ успешно оформлен!' : 'Buyurtma muvaffaqiyatli qabul qilindi!');
+                setShowSuccessModal(true);
                 setCart([]);
             }
         } catch (error) {
@@ -638,6 +640,13 @@ const Shop = ({ language }) => {
                     language={language}
                     onCancel={() => setShowMapPicker(false)}
                     onConfirm={handleManualLocation}
+                />
+            )}
+
+            {showSuccessModal && (
+                <SuccessModal
+                    language={language}
+                    onClose={() => setShowSuccessModal(false)}
                 />
             )}
         </div>
