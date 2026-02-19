@@ -64,6 +64,16 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
         },
     ];
 
+    const [isLangOpen, setIsLangOpen] = useState(false);
+
+    const languages = [
+        {
+            code: 'uz', label: '🇺🇿 O'zbekcha' },
+        { code: 'ru', label: '🇷🇺 Русский' }
+    ];
+
+    const activeLanguage = languages.find(l => l.code === language) || languages[0];
+
     return (
         <>
             <div className={`sidebar-overlay ${isOpen ? 'show' : ''}`} onClick={onClose}></div>
@@ -94,20 +104,34 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                 </nav>
 
                 <div className="sidebar-footer">
-                    <div className="language-selector-custom">
+                    <div className={`language-selector-collapsible ${isLangOpen ? 'expanded' : ''}`}>
                         <div
-                            className={`lang-option ${language === 'uz' ? 'active' : ''}`}
-                            onClick={() => onLanguageChange('uz')}
+                            className="selected-language"
+                            onClick={() => setIsLangOpen(!isLangOpen)}
                         >
-                            <span className="lang-check">{language === 'uz' ? '✓' : ''}</span>
-                            <span className="lang-text">🇺🇿 O'zbekcha</span>
+                            <span className="lang-text">{activeLanguage.label}</span>
+                            <svg
+                                className={`chevron-icon ${isLangOpen ? 'up' : 'down'}`}
+                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                            >
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
                         </div>
-                        <div
-                            className={`lang-option ${language === 'ru' ? 'active' : ''}`}
-                            onClick={() => onLanguageChange('ru')}
-                        >
-                            <span className="lang-check">{language === 'ru' ? '✓' : ''}</span>
-                            <span className="lang-text">🇷🇺 Русский</span>
+
+                        <div className="language-options">
+                            {languages.map((l) => (
+                                <div
+                                    key={l.code}
+                                    className={`lang-option ${language === l.code ? 'active' : ''}`}
+                                    onClick={() => {
+                                        onLanguageChange(l.code);
+                                        setIsLangOpen(false);
+                                    }}
+                                >
+                                    <span className="lang-check">{language === l.code ? '✓' : ''}</span>
+                                    <span className="lang-text">{l.label}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
