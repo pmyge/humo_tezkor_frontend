@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../api';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user, unreadCount = 0 }) => {
+    const [phoneNumber, setPhoneNumber] = useState('+998933373493');
+
+    useEffect(() => {
+        api.getAbout().then(data => {
+            if (data?.phone_number) setPhoneNumber(data.phone_number);
+        }).catch(() => { });
+    }, []);
+
     const menuItems = [
         {
             id: 'profile',
@@ -105,7 +114,7 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                         </div>
                         <div className="contact-details">
                             <span className="contact-label">{language === 'ru' ? 'Dlya svyazi' : 'Aloqa uchun'}</span>
-                            <span className="contact-phone">+998933373493</span>
+                            <span className="contact-phone">{phoneNumber}</span>
                         </div>
                     </div>
                 </div>
