@@ -94,15 +94,23 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                 </nav>
 
                 <div className="sidebar-footer">
-                    <div className="language-selector">
-                        <select
-                            value={language}
-                            onChange={(e) => onLanguageChange(e.target.value)}
-                            className="lang-select"
+                    <div className="language-selector-custom">
+                        <div
+                            className={`lang-option ${language === 'uz' ? 'active' : ''}`}
+                            onClick={() => onLanguageChange('uz')}
                         >
-                            <option value="uz">🇺🇿 O'zbekcha</option>
-                            <option value="ru">🇷🇺 Русский</option>
-                        </select>
+                            <span className="lang-check">{language === 'uz' ? '✓' : ''}</span>
+                            <span className="lang-flag">🇺🇿</span>
+                            <span className="lang-text">O'zbekcha</span>
+                        </div>
+                        <div
+                            className={`lang-option ${language === 'ru' ? 'active' : ''}`}
+                            onClick={() => onLanguageChange('ru')}
+                        >
+                            <span className="lang-check">{language === 'ru' ? '✓' : ''}</span>
+                            <span className="lang-flag">🇷🇺</span>
+                            <span className="lang-text">Русский</span>
+                        </div>
                     </div>
 
                     <div className="contact-info">

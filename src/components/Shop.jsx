@@ -231,6 +231,9 @@ const Shop = ({ language }) => {
                                 updateCurrentUser(null);
                                 return false;
                             }
+                            if (userData.language && userData.language !== language) {
+                                window.dispatchEvent(new CustomEvent('langChange', { detail: userData.language }));
+                            }
                             updateCurrentUser(userData, 'backend');
                             return true;
                         }

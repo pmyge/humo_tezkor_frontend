@@ -13,17 +13,29 @@ const RouteGuard = ({ children }) => {
 
     useEffect(() => {
         const checkUser = async () => {
-            if (telegram?.initDataUnsafe?.user?.id) {
-                const userId = telegram.initDataUnsafe.user.id;
+            const urlParams = new URLSearchParams(window.location.search);
+            const tidParam = urlParams.get('tid');
+            let userId = tidParam && parseInt(tidParam) > 0 ? parseInt(tidParam) : telegram?.initDataUnsafe?.user?.id;
+
+            // Fallback to manual parse if telegram object is not ready
+            if (!userId) {
+                try {
+                    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+                    const tgWebAppData = hashParams.get('tgWebAppData');
+                    const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
+                    const userRaw = source.get('user');
+                    if (userRaw) userId = JSON.parse(userRaw).id;
+                } catch (e) { }
+            }
+
+            if (userId) {
                 try {
                     const userInfo = await api.getUserInfo(userId);
                     // If user not found or no phone, and not already on registration page
-                    if ((!userInfo || !userInfo.phone_number) && location.pathname !== '/registration') {
-                        // Only navigate to registration if definitely missing phone and not already there
+                    if ((!userInfo || !userInfo.phone_number || userInfo.phone_number === '-') && location.pathname !== '/registration') {
                         navigate('/registration');
                     }
                     if (userInfo?.language) {
-                        // This helps sync if they changed it in the bot and re-opened
                         window.dispatchEvent(new CustomEvent('langChange', { detail: userInfo.language }));
                     }
                 } catch (err) {
@@ -50,7 +62,20 @@ function App() {
 
             // Fetch user language
             const fetchLang = async () => {
-                const userId = telegram.initDataUnsafe?.user?.id;
+                const urlParams = new URLSearchParams(window.location.search);
+                const tidParam = urlParams.get('tid');
+                let userId = tidParam && parseInt(tidParam) > 0 ? parseInt(tidParam) : telegram.initDataUnsafe?.user?.id;
+
+                if (!userId) {
+                    try {
+                        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+                        const tgWebAppData = hashParams.get('tgWebAppData');
+                        const source = tgWebAppData ? new URLSearchParams(tgWebAppData) : hashParams;
+                        const userRaw = source.get('user');
+                        if (userRaw) userId = JSON.parse(userRaw).id;
+                    } catch (e) { }
+                }
+
                 if (userId) {
                     const user = await api.getUserInfo(userId);
                     if (user?.language) {
