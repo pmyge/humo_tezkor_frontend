@@ -31,7 +31,12 @@ const Shop = ({ language }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('home'); // 'home', 'all_categories', 'category_products', 'profile', 'favorites'
+    const [view, setView] = useState(() => {
+        const path = window.location.pathname;
+        if (path === '/orders') return 'my_orders';
+        if (path === '/chat') return 'chat';
+        return 'home';
+    });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -602,14 +607,24 @@ const Shop = ({ language }) => {
             );
         }
 
-        if (view === 'my_orders' && currentUser) {
-            return (
-                <MyOrders
-                    user={currentUser}
-                    language={language}
-                    onBack={() => setView('home')}
-                />
-            );
+        if (view === 'chat') {
+            if (currentUser) {
+                return <ChatSupport user={currentUser} language={language} onBack={() => setView('home')} />;
+            }
+            return <div className="loading">{language === 'ru' ? 'Загрузка чата...' : 'Chat yuklanmoqda...'}</div>;
+        }
+
+        if (view === 'my_orders') {
+            if (currentUser) {
+                return (
+                    <MyOrders
+                        user={currentUser}
+                        language={language}
+                        onBack={() => setView('home')}
+                    />
+                );
+            }
+            return <div className="loading">{language === 'ru' ? 'Загрузка заказов...' : 'Buyurtmalar yuklanmoqda...'}</div>;
         }
 
         if (view === 'notifications') {
@@ -625,10 +640,6 @@ const Shop = ({ language }) => {
 
         if (view === 'about') {
             return <AboutUs about={aboutData} language={language} onBack={() => setView('home')} />;
-        }
-
-        if (view === 'chat' && currentUser) {
-            return <ChatSupport user={currentUser} language={language} onBack={() => setView('home')} />;
         }
 
         if (view === 'favorites') {
