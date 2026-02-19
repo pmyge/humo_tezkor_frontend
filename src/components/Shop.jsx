@@ -816,7 +816,7 @@ const Shop = ({ language }) => {
 
             {renderContent()}
 
-            {cart.length > 0 && view === 'home' && !selectedProduct && (
+            {cart.length > 0 && ['home', 'category_products', 'all_categories', 'favorites'].includes(view) && !selectedProduct && (
                 <div className="cart-summary-fixed">
                     <button className="cart-total-btn" onClick={submitFullOrder} disabled={isSubmittingOrder}>
                         <span className="cart-btn-icon">🛒</span>
@@ -825,6 +825,18 @@ const Shop = ({ language }) => {
                                 ? (language === 'ru' ? 'Оформление...' : 'Yuborilmoqda...')
                                 : cartTotal.toLocaleString() + ' UZS'}
                         </span>
+                    </button>
+                    <button
+                        className="cart-clear-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(language === 'ru' ? 'Очистить корзину?' : 'Savatni tozalamoqchimisiz?')) {
+                                setCart([]);
+                            }
+                        }}
+                        title={language === 'ru' ? 'Очистить корзину' : 'Savatni tozalash'}
+                    >
+                        <span role="img" aria-label="clear-cart">🗑️</span>
                     </button>
                 </div>
             )}
