@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryList from './CategoryList';
 import ProductGrid from './ProductGrid';
 import SearchBar from './SearchBar';
@@ -23,6 +24,8 @@ import './ProductDetail.css'; // Also for shared components
 import '../index.css';
 
 const Shop = ({ language }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [categories, setCategories] = useState([]);
     const [allProducts, setAllProducts] = useState([]); // For search in all products
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -70,6 +73,17 @@ const Shop = ({ language }) => {
     useEffect(() => {
         loadAboutData();
     }, []);
+
+    // Sync view with URL path
+    useEffect(() => {
+        if (location.pathname === '/orders') {
+            setView('my_orders');
+        } else if (location.pathname === '/chat') {
+            setView('chat');
+        } else if (location.pathname === '/') {
+            setView('home');
+        }
+    }, [location.pathname]);
 
     const loadAboutData = async () => {
         try {

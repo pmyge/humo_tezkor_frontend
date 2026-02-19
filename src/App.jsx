@@ -82,7 +82,15 @@ function App() {
                         path="/orders"
                         element={
                             <RouteGuard>
-                                <Orders />
+                                <Shop language={language} />
+                            </RouteGuard>
+                        }
+                    />
+                    <Route
+                        path="/chat"
+                        element={
+                            <RouteGuard>
+                                <Shop language={language} />
                             </RouteGuard>
                         }
                     />
