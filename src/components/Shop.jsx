@@ -418,36 +418,35 @@ const Shop = ({ language }) => {
     };
 
     const handleSidebarItemClick = async (id) => {
+        const query = location.search;
         if (id === 'profile') {
             const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '' && currentUser.phone_number !== '-';
-
             if (hasPhone) {
+                navigate('/' + query); // Profile is part of home view but needs to trigger effect or state
                 setView('profile');
             } else {
-                console.log('DEBUG: User profile incomplete, opening AuthDrawer from Sidebar');
                 setIsAuthDrawerOpen(true);
             }
         } else if (id === 'orders') {
             const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '' && currentUser.phone_number !== '-';
             if (hasPhone) {
-                setSelectedCategory(null);
-                setSelectedProduct(null);
-                setView('my_orders');
+                navigate('/orders' + query);
+                // setView is handled by useEffect on location change
             } else {
-                console.log('DEBUG: User profile incomplete, opening AuthDrawer for Orders');
                 setIsAuthDrawerOpen(true);
             }
         } else if (id === 'favorites') {
-            setSelectedCategory(null);
-            setSelectedProduct(null);
-            setFavoritesPage(1); // Reset to first page
+            setFavoritesPage(1);
             setView('favorites');
+            navigate('/' + query);
         } else if (id === 'notifications') {
             setView('notifications');
             loadNotifications();
+            navigate('/' + query);
         } else if (id === 'about') {
             setView('about');
             loadAboutData();
+            navigate('/' + query);
         }
     };
 
