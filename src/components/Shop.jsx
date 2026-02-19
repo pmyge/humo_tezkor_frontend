@@ -32,9 +32,9 @@ const Shop = ({ language }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState(() => {
-        const path = window.location.pathname;
-        if (path === '/orders') return 'my_orders';
-        if (path === '/chat') return 'chat';
+        const path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+        if (path.includes('/orders')) return 'my_orders';
+        if (path.includes('/chat')) return 'chat';
         return 'home';
     });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -81,11 +81,12 @@ const Shop = ({ language }) => {
 
     // Sync view with URL path
     useEffect(() => {
-        if (location.pathname === '/orders') {
+        const path = location.pathname.toLowerCase().replace(/\/$/, '');
+        if (path.includes('/orders')) {
             setView('my_orders');
-        } else if (location.pathname === '/chat') {
+        } else if (path.includes('/chat')) {
             setView('chat');
-        } else if (location.pathname === '/') {
+        } else if (path === '' || path === '/') {
             setView('home');
         }
     }, [location.pathname]);
