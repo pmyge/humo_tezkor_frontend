@@ -682,7 +682,12 @@ const Shop = ({ language }) => {
                         </>
                     ) : (
                         <div className="empty-favorites">
-                            {language === 'ru' ? 'У вас пока нет избранных товаров.' : 'Sizda hozircha sevimlilar yo\'q.'}
+                            <div className="empty-favorites-icon">❤️</div>
+                            <h3>{language === 'ru' ? 'Здесь пока пусто...' : 'Bu yer hozircha bo\'sh...'}</h3>
+                            <p>{language === 'ru' ? 'У вас пока нет избранных товаров. Добавьте то, что вам понравилось!' : 'Sizda hozircha sevimlilar yo\'q. O\'zingizga yoqqan mahsulotlarni qo\'shing!'}</p>
+                            <button className="go-shopping-btn" onClick={() => setView('home')}>
+                                {language === 'ru' ? 'Перейти к покупкам' : 'Xarid qilishni boshlash'}
+                            </button>
                         </div>
                     )}
                 </div>
