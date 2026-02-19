@@ -79,9 +79,7 @@ export default function ChatSupport({ user, language, onBack }) {
                     </h2>
                     <span className="cs-status">Online</span>
                 </div>
-                <button className="cs-call-btn">
-                    <span className="cs-call-icon">📞</span>
-                </button>
+
             </header>
 
             {/* Chat Body */}
@@ -102,7 +100,7 @@ export default function ChatSupport({ user, language, onBack }) {
                                     key={msg.id || index}
                                     className={`cs-message-row ${msg.is_from_admin ? 'admin' : 'user'}`}
                                 >
-                                    <div className="cs-message-bubble">
+                                    <div className={`cs-message-bubble ${msg.is_from_admin ? 'admin-bubble' : ''}`}>
                                         {msg.image && (
                                             <div className="cs-message-image">
                                                 <img src={api.getImageUrl(msg.image)} alt="Attached" onClick={() => window.open(api.getImageUrl(msg.image), '_blank')} />
