@@ -545,7 +545,11 @@ const Shop = ({ language }) => {
                         {categories.map(cat => (
                             <div key={cat.id} className="category-item-large" onClick={() => setSelectedCategory(cat)}>
                                 <div className="category-image-container">
-                                    {cat.image ? <img src={api.getImageUrl(cat.image)} alt={cat.name} /> : <span>📦</span>}
+                                    {cat.image_base64 || cat.image ? (
+                                        <img src={cat.image_base64 || api.getImageUrl(cat.image)} alt={cat.name} />
+                                    ) : (
+                                        <span className="category-icon">📦</span>
+                                    )}
                                 </div>
                                 <span>{language === 'ru' ? (cat.name_ru || cat.name) : cat.name}</span>
                             </div>
