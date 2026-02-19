@@ -100,16 +100,14 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                             onClick={() => onLanguageChange('uz')}
                         >
                             <span className="lang-check">{language === 'uz' ? '✓' : ''}</span>
-                            <span className="lang-flag">🇺🇿</span>
-                            <span className="lang-text">O'zbekcha</span>
+                            <span className="lang-text">🇺🇿 O'zbekcha</span>
                         </div>
                         <div
                             className={`lang-option ${language === 'ru' ? 'active' : ''}`}
                             onClick={() => onLanguageChange('ru')}
                         >
                             <span className="lang-check">{language === 'ru' ? '✓' : ''}</span>
-                            <span className="lang-flag">🇷🇺</span>
-                            <span className="lang-text">Русский</span>
+                            <span className="lang-text">🇷🇺 Русский</span>
                         </div>
                     </div>
 
