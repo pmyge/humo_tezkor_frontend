@@ -349,3 +349,59 @@ body {
 .check-icon {
   font-size: 20px;
 }
+.empty-favorites {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+  font-size: 16px;
+  background: white;
+  margin: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 12px;
+}
+
+.empty-favorites-icon {
+  font-size: 64px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.empty-favorites h3 {
+  color: var(--text-main);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.empty-favorites p {
+  color: var(--text-muted);
+  font-size: 14px;
+  max-width: 260px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.go-shopping-btn {
+  margin-top: 12px;
+  background: var(--brand-tezkor);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(8, 37, 73, 0.1);
+}
+
+.go-shopping-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
