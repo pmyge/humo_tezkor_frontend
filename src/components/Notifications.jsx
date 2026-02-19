@@ -20,14 +20,14 @@ export default function Notifications({ notifications, language, onMarkRead, onB
             <div className="view-header">
                 <button className="back-btn" onClick={onBack}>←</button>
                 <h2 className="view-title">
-                    {language === 'ru' ? 'Uvedomleniya' : 'Bildirishnomalar'}
+                    {language === 'ru' ? 'Уведомления' : 'Bildirishnomalar'}
                 </h2>
             </div>
 
             {isEmpty ? (
                 <div className="empty-state">
                     <div className="empty-icon">🔔</div>
-                    <p>{language === 'ru' ? 'Uvedomleniy poka net' : 'Hozircha bildirishnomalar yo\'q'}</p>
+                    <p>{language === 'ru' ? 'Уведомлений пока нет' : 'Hozircha bildirishnomalar yo\'q'}</p>
                 </div>
             ) : (
                 <div className="notifications-list">

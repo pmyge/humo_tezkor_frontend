@@ -793,7 +793,7 @@ const Shop = ({ language }) => {
                         <span className="chat-icon">💬</span>
                     </button>
                 </div>
-                <p className="subtitle">mini ilova</p>
+                <p className="subtitle">{language === 'ru' ? 'минии приложение' : 'mini ilova'}</p>
             </header>
 
             <div className="search-container">

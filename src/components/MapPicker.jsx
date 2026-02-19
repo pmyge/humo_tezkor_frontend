@@ -185,7 +185,7 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
                     onClick={() => onConfirm({ ...coordinates, address })}
                     disabled={loading}
                 >
-                    {language === 'ru' ? 'Tasdiqlash' : 'Tasdiqlash'}
+                    {language === 'ru' ? 'Подтвердить' : 'Tasdiqlash'}
                 </button>
             </div>
         </div>

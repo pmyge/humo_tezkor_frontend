@@ -1,7 +1,7 @@
 import React from 'react';
 import './SearchBar.css';
 
-export default function SearchBar({ value, onChange }) {
+export default function SearchBar({ value, onChange, placeholder, language }) {
     return (
         <div className="search-container">
             <div className="search-bar">
@@ -10,7 +10,7 @@ export default function SearchBar({ value, onChange }) {
                 </svg>
                 <input
                     type="text"
-                    placeholder="Mahsulotlarni qidirish"
+                    placeholder={placeholder || (language === 'ru' ? 'Поиск товаров...' : 'Mahsulotlarni qidirish...')}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     className="search-input"
