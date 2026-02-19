@@ -67,9 +67,8 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
     const [isLangOpen, setIsLangOpen] = useState(false);
 
     const languages = [
-        {
-            code: 'uz', label: '🇺🇿 O'zbekcha' },
-        { code: 'ru', label: '🇷🇺 Русский' }
+        { code: 'uz', label: "🇺🇿 O'zbekcha" },
+        { code: 'ru', label: "🇷🇺 Русский" }
     ];
 
     const activeLanguage = languages.find(l => l.code === language) || languages[0];
