@@ -40,8 +40,15 @@ const PhoneRegistration = () => {
                 user.username || ''
             );
             if (response) {
-                // If we came from a specific page, go back or to home
-                navigate('/');
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect');
+
+                if (redirect) {
+                    navigate(decodeURIComponent(redirect));
+                } else {
+                    const tid = user.id;
+                    navigate(`/?tid=${tid}`);
+                }
             }
         } catch (err) {
             setError('Xatolik yuz berdi. Qayta urinib ko\'ring.');

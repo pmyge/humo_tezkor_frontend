@@ -33,7 +33,8 @@ const RouteGuard = ({ children }) => {
                     const userInfo = await api.getUserInfo(userId);
                     // If user not found or no phone, and not already on registration page
                     if ((!userInfo || !userInfo.phone_number || userInfo.phone_number === '-') && location.pathname !== '/registration') {
-                        navigate('/registration');
+                        const redirectPath = encodeURIComponent(location.pathname + location.search);
+                        navigate(`/registration?redirect=${redirectPath}`);
                     }
                     if (userInfo?.language) {
                         window.dispatchEvent(new CustomEvent('langChange', { detail: userInfo.language }));

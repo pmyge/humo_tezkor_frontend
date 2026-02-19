@@ -270,7 +270,7 @@ const Shop = ({ language }) => {
             setView('category_products');
             setCategoryPage(1); // Reset to first page
             loadCategoryProducts(selectedCategory.id);
-        } else {
+        } else if (view === 'category_products' || view === 'all_categories') {
             setView('home');
         }
     }, [selectedCategory]);
