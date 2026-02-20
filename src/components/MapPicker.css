@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: white;
+    background: var(--primary-bg);
     z-index: 2500;
     display: flex;
     flex-direction: column;
@@ -28,19 +28,19 @@
     height: 44px;
     border-radius: 50%;
     border: none;
-    background: white;
+    background: var(--card-bg);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #1e293b;
+    color: var(--text-main);
 }
 
 .map-search-bar {
     flex: 1;
-    background: white;
+    background: var(--input-bg);
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -60,7 +60,7 @@
     outline: none;
     font-size: 15px;
     width: 100%;
-    color: #475569;
+    color: var(--input-text);
     background: transparent;
 }
 
@@ -116,9 +116,9 @@
 .zoom-controls {
     display: flex;
     flex-direction: column;
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
@@ -126,9 +126,9 @@
     width: 44px;
     height: 44px;
     border: none;
-    background: white;
+    background: var(--card-bg);
     font-size: 22px;
-    color: #475569;
+    color: var(--text-main);
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -158,7 +158,7 @@
 /* Footer Section */
 .map-footer {
     padding: 24px 20px;
-    background: white;
+    background: var(--card-bg);
     border-radius: 28px 28px 0 0;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
     z-index: 1000;
@@ -174,7 +174,7 @@
 .address-text {
     font-size: 18px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-main);
     margin: 0;
     line-height: 1.5;
     text-align: left;
