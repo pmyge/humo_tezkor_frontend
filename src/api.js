@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://humo-tezkor-backend.onrender.com/api').trim();
 
 const fetchWithBypass = async (url, options = {}) => {
     const controller = new AbortController();
