@@ -7,7 +7,7 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
     const markerInstance = useRef(null);
 
     const [address, setAddress] = useState('');
-    const [coordinates, setCoordinates] = useState({ lat: 41.311081, lng: 69.240562 }); // Default: Tashkent
+    const [coordinates, setCoordinates] = useState({ lat: 40.5288, lng: 68.0315 }); // Default: Do'stlik, Jizzax
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -171,7 +171,7 @@ const MapPicker = ({ onConfirm, onCancel, language }) => {
                         <button onClick={zoomOut}>−</button>
                     </div>
                     <button className="my-location-btn" onClick={handleMyLocation}>
-                        <span className="gps-icon">🚀</span>
+                        <span className="gps-icon">🎯</span>
                     </button>
                 </div>
             </div>
