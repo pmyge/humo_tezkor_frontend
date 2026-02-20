@@ -15,6 +15,9 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --border-radius: 16px;
+  --brand-tezkor: #fbc02d;
+  --brand-tezkor-light: #fdd835;
+  --brand-humo: #2d9da6;
 }
 
 .app[data-theme='dark'] {
@@ -32,6 +35,9 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
   --border-radius: 16px;
+  --brand-tezkor: #fbc02d;
+  --brand-tezkor-light: #fdd835;
+  --brand-humo: #2d9da6;
 }
 
 * {
