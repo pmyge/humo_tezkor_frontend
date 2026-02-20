@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../api';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user, unreadCount = 0 }) => {
+const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, user, unreadCount = 0, theme, toggleTheme }) => {
     const [phoneNumber, setPhoneNumber] = useState('+998933373493');
 
     useEffect(() => {
@@ -103,6 +103,24 @@ const Sidebar = ({ isOpen, onClose, language, onLanguageChange, onItemClick, use
                 </nav>
 
                 <div className="sidebar-footer">
+                    <div className="theme-toggle-container">
+                        <div className="theme-info">
+                            <span className="theme-icon-main">
+                                {theme === 'dark' ? '🌙' : '☀️'}
+                            </span>
+                            <span className="theme-toggle-label">
+                                {language === 'ru' ? 'Темный режим' : 'Tungi rejim'}
+                            </span>
+                        </div>
+                        <button
+                            className={`theme-toggle-switch ${theme === 'dark' ? 'active' : ''}`}
+                            onClick={toggleTheme}
+                            aria-label="Toggle theme"
+                        >
+                            <div className="switch-handle"></div>
+                        </button>
+                    </div>
+
                     <div className={`language-selector-collapsible ${isLangOpen ? 'expanded' : ''}`}>
                         <div
                             className="selected-language"

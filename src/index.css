@@ -1,21 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-:root {
+.app[data-theme='light'] {
   --primary-bg: #f8fafc;
-  --brand-humo: #0A244D;
-  --brand-tezkor: #082549;
-  /* New Dark Blue */
-  --brand-tezkor-light: #163a6b;
-  --header-bg: linear-gradient(135deg, #0A244D 0%, #162a50 100%);
-  --accent-color: var(--brand-tezkor);
-  --brand-gold: #f5b000;
-  --text-main: #0A244D;
+  --header-bg: linear-gradient(135deg, #2d9da6 0%, #248b94 100%);
+  --accent-color: #f59e0b;
+  --text-main: #0f172a;
   --text-muted: #64748b;
   --card-bg: #ffffff;
-  --border-radius: 16px;
+  --border-color: rgba(0, 0, 0, 0.05);
+  --input-bg: #ffffff;
+  --input-text: #0f172a;
+  --category-hover: rgba(45, 157, 166, 0.05);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 16px;
+}
+
+.app[data-theme='dark'] {
+  --primary-bg: #0f172a;
+  --header-bg: linear-gradient(135deg, #1a1a2e 0%, #0f172a 100%);
+  --accent-color: #3b82f6;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --card-bg: #1e293b;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --input-bg: #334155;
+  --input-text: #f8fafc;
+  --category-hover: rgba(59, 130, 246, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --border-radius: 16px;
 }
 
 * {
@@ -31,6 +47,7 @@ body {
   color: var(--text-main);
   line-height: 1.5;
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .app {
@@ -39,6 +56,7 @@ body {
   margin: 0 auto;
   background: var(--primary-bg);
   position: relative;
+  transition: background 0.3s ease;
 }
 
 .header {
@@ -66,13 +84,11 @@ body {
 
 .brand-title .humo {
   color: white;
-  /* Contrast against dark blue header */
-  /* Or use #fff for better visibility on dark bg */
 }
 
 .brand-title .tezkor {
-  color: #C83006;
-  text-shadow: 0 0 10px rgba(200, 48, 6, 0.4);
+  color: var(--accent-color);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .header-top {

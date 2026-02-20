@@ -1,18 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 .au-wrapper {
-    --au-bg: #f8fafc;
-    --au-navy: #0f172a;
-    --au-orange: #ff4d00;
-    --au-border: #e2e8f0;
-    --au-text-main: #1e293b;
-    --au-text-muted: #64748b;
-    --au-card-bg: #ffffff;
+    --au-bg: var(--primary-bg);
+    --au-navy: var(--text-main);
+    --au-orange: var(--accent-color);
+    --au-border: var(--border-color);
+    --au-text-main: var(--text-main);
+    --au-text-muted: var(--text-muted);
+    --au-card-bg: var(--card-bg);
 
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--au-bg);
     min-height: 100vh;
     color: var(--au-text-main);
+    transition: all 0.3s ease;
 }
 
 /* Fixed Header */
@@ -22,7 +23,8 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--card-bg);
+    opacity: 0.95;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--au-border);
@@ -36,19 +38,19 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--card-bg);
     border: 1px solid var(--au-border);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
 }
 
 .au-back-circle:active {
     transform: scale(0.9);
-    background: #f1f5f9;
+    background: var(--primary-bg);
 }
 
 .au-back-arrow {
@@ -132,13 +134,13 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    box-shadow: var(--shadow-sm);
 }
 
 .au-icon-box {
     width: 48px;
     height: 48px;
-    background: #f1f5f9;
+    background: var(--primary-bg);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -148,7 +150,8 @@
 }
 
 .au-icon-box.orange {
-    background: rgba(255, 77, 0, 0.08);
+    background: var(--category-hover);
+    color: var(--au-orange);
 }
 
 .au-card-body .au-label {
@@ -183,7 +186,7 @@
     border: 1px solid var(--au-border);
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-md);
 }
 
 .au-location-card .au-card-item.no-border {
@@ -199,6 +202,7 @@
     margin: 0 12px 12px;
     border-radius: 16px;
     overflow: hidden;
+    background: var(--primary-bg);
 }
 
 .au-map-static {
@@ -274,7 +278,7 @@
 .au-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #e2e8f0;
+    border: 3px solid var(--au-border);
     border-top-color: var(--au-orange);
     border-radius: 50%;
     animation: auSpin 1s linear infinite;

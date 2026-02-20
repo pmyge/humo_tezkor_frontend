@@ -1,6 +1,6 @@
 .profile-edit-view {
     min-height: 100vh;
-    background: white;
+    background: var(--primary-bg);
     display: flex;
     flex-direction: column;
 }
@@ -20,30 +20,30 @@
 .profile-input {
     width: 100%;
     padding: 16px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     font-size: 16px;
-    color: #1e293b;
-    background: #f8fafc;
-    transition: border-color 0.2s;
+    color: var(--input-text);
+    background: var(--input-bg);
+    transition: all 0.2s;
 }
 
 .profile-input:focus {
-    border-color: #818cf8;
+    border-color: var(--accent-color);
     outline: none;
-    background: white;
+    box-shadow: 0 0 0 2px var(--category-hover);
 }
 
 .profile-input.disabled {
-    color: #94a3b8;
-    background: #f1f5f9;
+    color: var(--text-muted);
+    opacity: 0.7;
     cursor: not-allowed;
 }
 
 .save-changes-btn {
     margin-top: 8px;
     width: 100%;
-    background: #7c3aed;
+    background: var(--accent-color);
     color: white;
     padding: 16px;
     border-radius: 12px;
@@ -76,7 +76,7 @@
     transform: translateY(-50%);
     width: 4px;
     height: 24px;
-    background: #3b82f6;
+    background: var(--accent-color);
     border-radius: 4px;
 }
 
@@ -91,7 +91,7 @@
     padding: 16px;
     background: transparent;
     color: #ef4444;
-    border: 1px solid #fee2e2;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
@@ -100,13 +100,13 @@
 }
 
 .logout-btn:active {
-    background: #fef2f2;
+    background: rgba(239, 68, 68, 0.05);
 }
 
 .logout-hint {
     margin-top: 12px;
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .profile-footer {

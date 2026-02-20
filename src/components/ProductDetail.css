@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: white;
+    background: var(--card-bg);
     z-index: 1002;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     width: 100%;
     aspect-ratio: 1.1;
     position: relative;
-    background: #f8fafc;
+    background: var(--primary-bg);
 }
 
 .detail-image-container img {
@@ -31,15 +31,16 @@
     top: 20px;
     width: 44px;
     height: 44px;
-    background: white;
+    background: var(--card-bg);
     border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     z-index: 10;
     cursor: pointer;
+    color: var(--text-main);
 }
 
 .detail-back-btn {
@@ -66,20 +67,20 @@
 .detail-price {
     font-size: 24px;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--text-main);
 }
 
 .detail-name {
     font-size: 20px;
     font-weight: 700;
-    color: #334155;
+    color: var(--text-main);
     margin: 0;
     line-height: 1.4;
 }
 
 .detail-description {
     font-size: 15px;
-    color: #64748b;
+    color: var(--text-muted);
     line-height: 1.6;
     margin-top: 12px;
 }
@@ -89,11 +90,11 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    background: white;
+    background: var(--card-bg);
     padding: 16px 20px 24px;
     display: flex;
     gap: 16px;
-    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -10px 20px var(--border-color);
     z-index: 11;
     box-sizing: border-box;
 }
@@ -101,10 +102,10 @@
 .quantity-selector {
     display: flex;
     align-items: center;
-    background: #f1f5f9;
+    background: var(--input-bg);
     padding: 4px;
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     flex: 0 0 120px;
     justify-content: space-between;
 }
@@ -114,41 +115,41 @@
     height: 36px;
     border-radius: 10px;
     border: none;
-    background: white;
-    color: #475569;
+    background: var(--card-bg);
+    color: var(--text-main);
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .qty-btn:active {
-    background: #f8fafc;
+    background: var(--primary-bg);
     transform: scale(0.95);
 }
 
 .qty-btn.plus {
-    background: var(--brand-tezkor);
+    background: var(--accent-color);
     color: white;
 }
 
 .qty-btn:hover:not(.plus) {
-    background: #f1f5f9;
+    background: var(--primary-bg);
 }
 
 .qty-btn.plus:hover {
-    background: var(--brand-tezkor-light);
+    opacity: 0.9;
 }
 
 .qty-value {
     font-size: 16px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-main);
 }
 
 .add-to-cart-btn {
     flex: 1;
-    background: var(--brand-tezkor);
+    background: var(--accent-color);
     color: white;
     border: none;
     border-radius: 14px;
@@ -160,13 +161,12 @@
     gap: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(8, 37, 73, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .add-to-cart-btn:hover:not(.disabled) {
-    background: var(--brand-tezkor-light);
+    opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(8, 37, 73, 0.3);
 }
 
 .add-to-cart-btn:active:not(.disabled) {
@@ -179,27 +179,27 @@
 }
 
 .location-card {
-    background: #ffffff;
+    background: var(--card-bg);
     border-radius: 18px;
     padding: 16px;
     display: flex;
     align-items: center;
     gap: 14px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .location-card:active {
     transform: scale(0.98);
-    background: #f8fafc;
+    background: var(--primary-bg);
 }
 
 .loc-icon-box {
     width: 48px;
     height: 48px;
-    background: #eef2ff;
+    background: var(--primary-bg);
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -220,13 +220,13 @@
 .loc-tag {
     font-size: 10px;
     font-weight: 800;
-    color: var(--brand-tezkor);
+    color: var(--accent-color);
     letter-spacing: 1px;
 }
 
 .loc-text {
     font-size: 14px;
-    color: #334155;
+    color: var(--text-main);
     font-weight: 600;
     line-height: 1.4;
     overflow: hidden;
@@ -239,7 +239,7 @@
 
 .loc-arrow {
     font-size: 18px;
-    color: #94a3b8;
+    color: var(--text-muted);
     font-weight: 300;
 }
 

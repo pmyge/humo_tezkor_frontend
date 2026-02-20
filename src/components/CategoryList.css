@@ -1,10 +1,11 @@
 .category-list-container {
-    background: white;
+    background: var(--card-bg);
     margin-bottom: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 20;
+    transition: background 0.3s ease;
 }
 
 .category-list {
@@ -35,21 +36,21 @@
     width: 60px;
     height: 60px;
     border-radius: 18px;
-    background: #f1f5f9;
+    background: var(--primary-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     border: 2px solid transparent;
     overflow: hidden;
     transition: all 0.3s ease;
 }
 
 .category-item.active .category-image-container {
-    border-color: #3b82f6;
-    background: #eff6ff;
+    border-color: var(--accent-color);
+    background: var(--category-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .category-image-container img {
@@ -65,7 +66,7 @@
 .category-item span {
     font-size: 12px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-muted);
     text-align: center;
     transition: color 0.2s ease;
     max-width: 80px;
@@ -75,7 +76,7 @@
 }
 
 .category-item.active span {
-    color: #3b82f6;
+    color: var(--accent-color);
 }
 
 .category-item:active {

@@ -23,7 +23,7 @@
     left: -280px;
     width: 280px;
     height: 100%;
-    background: white;
+    background: var(--card-bg);
     z-index: 1001;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@
 
 .sidebar-header {
     padding: 30px 24px 20px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-brand {
@@ -67,7 +67,7 @@
 .brand-name {
     font-weight: 800;
     font-size: 18px;
-    color: #1e293b;
+    color: var(--text-main);
     letter-spacing: 0.5px;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .sidebar-item:active {
-    background: rgba(8, 37, 73, 0.1);
+    background: var(--category-hover);
 }
 
 .unread-dot-sidebar {
@@ -107,8 +107,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--brand-tezkor);
-    /* #082549 */
+    color: var(--accent-color);
     flex-shrink: 0;
 }
 
@@ -120,21 +119,77 @@
 .item-label {
     font-size: 15px;
     font-weight: 500;
-    color: #334155;
+    color: var(--text-main);
 }
 
 .sidebar-footer {
     padding: 24px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
+/* Theme Toggle Styles */
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--primary-bg);
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.theme-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-icon-main {
+    font-size: 18px;
+}
+
+.theme-toggle-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.theme-toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: #cbd5e1;
+    border-radius: 12px;
+    padding: 2px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-switch.active {
+    background: var(--accent-color);
+}
+
+.switch-handle {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle-switch.active .switch-handle {
+    transform: translateX(20px);
+}
+
 .language-selector-collapsible {
     display: flex;
     flex-direction: column;
-    background: #f1f5f9;
+    background: var(--primary-bg);
     border-radius: 20px;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -155,7 +210,7 @@
 
 .chevron-icon {
     transition: transform 0.3s ease;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .chevron-icon.up {
@@ -167,13 +222,13 @@
     opacity: 0;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: white;
+    background: var(--card-bg);
     margin: 0 8px 8px;
     border-radius: 14px;
 }
 
 .language-selector-collapsible.expanded {
-    background: #f1f5f9;
+    background: var(--primary-bg);
 }
 
 .language-selector-collapsible.expanded .language-options {
@@ -193,24 +248,24 @@
 }
 
 .lang-option:hover {
-    background: #f8fafc;
+    background: var(--category-hover);
 }
 
 .lang-option.active {
-    color: var(--brand-tezkor);
+    color: var(--accent-color);
 }
 
 .lang-check {
     width: 20px;
     font-size: 14px;
     font-weight: bold;
-    color: var(--brand-tezkor);
+    color: var(--accent-color);
 }
 
 .lang-text {
     font-size: 15px;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-main);
 }
 
 .contact-info {
@@ -218,7 +273,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: #f8fafc;
+    background: var(--primary-bg);
     border-radius: 16px;
 }
 
@@ -226,7 +281,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--brand-tezkor);
+    color: var(--accent-color);
 }
 
 .contact-details {
@@ -236,12 +291,12 @@
 
 .contact-label {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
 .contact-phone {
     font-size: 15px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-main);
 }

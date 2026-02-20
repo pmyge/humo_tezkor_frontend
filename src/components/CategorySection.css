@@ -19,20 +19,24 @@
 }
 
 .see-all-btn {
-    background: none;
+    background: var(--accent-color);
     border: none;
-    color: var(--accent-color);
+    color: white;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
 }
 
 .see-all-btn:active {
-    background: rgba(59, 130, 246, 0.1);
+    transform: scale(0.95);
+    opacity: 0.9;
 }
 
 .horizontal-product-scroll {
@@ -50,11 +54,11 @@
 
 .horizontal-product-card {
     flex: 0 0 140px;
-    background: white;
+    background: var(--card-bg);
     border-radius: 16px;
     overflow: hidden;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     scroll-snap-align: start;
 }
 
@@ -85,24 +89,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #f8fafc;
+    background: var(--primary-bg);
     border-radius: 16px;
     gap: 8px;
     color: var(--accent-color);
     font-weight: 600;
     font-size: 13px;
     scroll-snap-align: start;
-    border: 1px dashed #cbd5e1;
+    border: 1px dashed var(--border-color);
 }
 
 .more-icon-circle {
     width: 40px;
     height: 40px;
     border-radius: 20px;
-    background: white;
+    background: var(--card-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     font-size: 18px;
 }

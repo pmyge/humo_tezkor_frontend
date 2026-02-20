@@ -55,8 +55,17 @@ const RouteGuard = ({ children }) => {
 };
 
 function App() {
+    const [theme, setTheme] = React.useState(localStorage.getItem('theme') || 'light');
     const [language, setLanguage] = React.useState('uz');
     const telegram = window.Telegram?.WebApp;
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    };
+
+    useEffect(() => {
+        localStorage.setItem('theme', theme);
+    }, [theme]);
 
     useEffect(() => {
         if (telegram) {
@@ -97,13 +106,13 @@ function App() {
 
     return (
         <Router>
-            <div className="app">
+            <div className="app" data-theme={theme}>
                 <Routes>
                     <Route
                         path="/"
                         element={
                             <RouteGuard>
-                                <Shop language={language} />
+                                <Shop language={language} theme={theme} toggleTheme={toggleTheme} />
                             </RouteGuard>
                         }
                     />
@@ -111,7 +120,7 @@ function App() {
                         path="/orders"
                         element={
                             <RouteGuard>
-                                <Shop language={language} />
+                                <Shop language={language} theme={theme} toggleTheme={toggleTheme} />
                             </RouteGuard>
                         }
                     />
@@ -119,7 +128,7 @@ function App() {
                         path="/chat"
                         element={
                             <RouteGuard>
-                                <Shop language={language} />
+                                <Shop language={language} theme={theme} toggleTheme={toggleTheme} />
                             </RouteGuard>
                         }
                     />

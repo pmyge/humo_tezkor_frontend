@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #f5f7fb;
+    background-color: var(--primary-bg);
     position: fixed;
     top: 0;
     left: 0;
@@ -10,6 +10,7 @@
     bottom: 0;
     z-index: 1000;
     animation: csSlideIn 0.3s ease-out;
+    transition: background 0.3s ease;
 }
 
 @keyframes csSlideIn {
@@ -26,8 +27,8 @@
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    background: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
     gap: 12px;
 }
 
@@ -48,13 +49,13 @@
 
 .cs-back-btn:active,
 .cs-call-btn:active {
-    background: #f0f0f0;
+    background: var(--category-hover);
 }
 
 .cs-back-icon {
     font-size: 32px;
-    color: #007aff;
-    /* iOS blue style */
+    color: var(--accent-color);
+    /* iOS style */
     line-height: 1;
 }
 
@@ -67,7 +68,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text-main);
 }
 
 .cs-status {
@@ -78,7 +79,7 @@
 
 .cs-call-icon {
     font-size: 20px;
-    color: #556080;
+    color: var(--text-muted);
 }
 
 .cs-body {
@@ -113,18 +114,18 @@
     padding: 10px 14px;
     border-radius: 18px;
     position: relative;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .cs-message-row.user .cs-message-bubble {
-    background-color: #e3f2fd;
-    color: #1a1a1a;
+    background-color: var(--category-hover);
+    color: var(--text-main);
     border-bottom-right-radius: 4px;
 }
 
 .cs-message-row.admin .cs-message-bubble,
 .admin-bubble {
-    background-color: #1565c0;
+    background-color: var(--accent-color);
     color: #ffffff;
     border-bottom-left-radius: 4px;
 }
@@ -143,7 +144,7 @@
 .cs-message-time {
     display: block;
     font-size: 10px;
-    color: #888;
+    color: var(--text-muted);
     text-align: right;
     margin-top: 4px;
 }
@@ -154,7 +155,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
+    color: var(--text-muted);
     font-size: 14px;
 }
 
@@ -162,28 +163,29 @@
     display: flex;
     align-items: center;
     padding: 10px 16px;
-    background: #ffffff;
-    border-top: 1px solid #e0e0e0;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
     gap: 8px;
 }
 
 .cs-input {
     flex: 1;
-    background: #f1f3f4;
+    background: var(--primary-bg);
     border: none;
     padding: 10px 16px;
     border-radius: 24px;
     font-size: 14px;
     outline: none;
+    color: var(--text-main);
 }
 
 .cs-attach-icon {
     font-size: 22px;
-    color: #888;
+    color: var(--text-muted);
 }
 
 .cs-send-btn {
-    background-color: #5d68e2;
+    background-color: var(--accent-color);
     color: white;
     width: 40px;
     height: 40px;
@@ -191,6 +193,7 @@
 }
 
 .cs-send-btn:disabled {
+    opacity: 0.5;
     background-color: #ccc;
 }
 
@@ -222,8 +225,8 @@
 .cs-spinner {
     width: 30px;
     height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #5d68e2;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--accent-color);
     border-radius: 50%;
     animation: csSpin 1s linear infinite;
 }

@@ -23,7 +23,7 @@ import './SearchBar.css';
 import './ProductDetail.css'; // Also for shared components
 import '../index.css';
 
-const Shop = ({ language }) => {
+const Shop = ({ language, theme, toggleTheme }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [categories, setCategories] = useState([]);
@@ -739,6 +739,8 @@ const Shop = ({ language }) => {
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
                 language={language}
+                theme={theme}
+                toggleTheme={toggleTheme}
                 onLanguageChange={async (lang) => {
                     // Update local state
                     window.dispatchEvent(new CustomEvent('langChange', { detail: lang }));

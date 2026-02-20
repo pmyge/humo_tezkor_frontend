@@ -8,7 +8,7 @@
     align-items: center;
     justify-content: center;
     height: calc(100vh - 150px);
-    color: #666;
+    color: var(--text-muted);
 }
 
 .empty-icon {
@@ -28,7 +28,7 @@
     background: none;
     border: none;
     font-size: 24px;
-    color: var(--brand-tezkor);
+    color: var(--accent-color);
     cursor: pointer;
     padding: 5px;
     display: flex;
@@ -39,12 +39,12 @@
 }
 
 .view-header .back-btn:hover {
-    background: #f1f5f9;
+    background: var(--category-hover);
 }
 
 .view-title {
     font-size: 22px;
-    color: #0f172a;
+    color: var(--text-main);
     font-weight: 700;
     margin: 0;
     text-transform: uppercase;
@@ -58,24 +58,24 @@
 }
 
 .notification-item {
-    background: #fff;
+    background: var(--card-bg);
     padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1px solid transparent;
+    border: 1px solid var(--border-color);
 }
 
 .notification-item.unread {
-    border-left: 4px solid #082549;
-    background: #f8fbff;
+    border-left: 4px solid var(--accent-color);
+    background: var(--category-hover);
 }
 
 .notification-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .notification-header {
@@ -88,22 +88,23 @@
 .notification-title {
     font-size: 16px;
     font-weight: 600;
-    color: #082549;
+    color: var(--text-main);
     margin: 0;
     padding-right: 20px;
 }
 
 .notification-time {
     font-size: 12px;
-    color: #999;
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
 .notification-desc {
     font-size: 14px;
-    color: #555;
+    color: var(--text-main);
     line-height: 1.5;
     margin: 0;
+    opacity: 0.9;
 }
 
 .unread-dot {
@@ -117,5 +118,5 @@
 }
 
 .notification-item.read {
-    opacity: 0.8;
+    opacity: 0.7;
 }
