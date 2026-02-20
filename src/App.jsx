@@ -31,11 +31,14 @@ const RouteGuard = ({ children }) => {
             if (userId) {
                 try {
                     const userInfo = await api.getUserInfo(userId);
-                    // If user not found or no phone, and not already on registration page
+                    // If user not found or no phone, we no longer force redirect to registration
+                    // Registration will be prompted via AuthDrawer for specific actions
+                    /*
                     if ((!userInfo || !userInfo.phone_number || userInfo.phone_number === '-') && location.pathname !== '/registration') {
                         const redirectPath = encodeURIComponent(location.pathname + location.search);
                         navigate(`/registration?redirect=${redirectPath}`);
                     }
+                    */
                     if (userInfo?.language) {
                         window.dispatchEvent(new CustomEvent('langChange', { detail: userInfo.language }));
                     }
