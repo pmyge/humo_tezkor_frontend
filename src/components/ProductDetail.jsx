@@ -51,23 +51,6 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                 )}
             </div>
 
-            <div className="location-selection-container">
-                <div className="location-card" onClick={onShowLocationPicker}>
-                    <div className="loc-icon-box">
-                        <span className="loc-pin">📍</span>
-                    </div>
-                    <div className="loc-content">
-                        <span className="loc-tag">{language === 'ru' ? 'АДРЕС ДОСТАВКИ' : 'YETKAZIB BERISH MANZILI'}</span>
-                        <span className="loc-text">
-                            {selectedLocation ? selectedLocation.address : (language === 'ru' ? 'Нажмите, чтобы указать адрес' : 'Manzilni ko\'rsatish uchun bosing')}
-                        </span>
-                    </div>
-                    <div className="loc-arrow">
-                        {selectedLocation ? '➔' : '+'}
-                    </div>
-                </div>
-            </div>
-
             <div className="detail-actions-fixed">
                 <div className="quantity-selector">
                     <button className="qty-btn minus" onClick={handleDecrement}>−</button>
@@ -75,9 +58,8 @@ const ProductDetail = ({ product, language, onBack, favorites = [], onToggleFavo
                     <button className="qty-btn plus" onClick={handleIncrement}>+</button>
                 </div>
                 <button
-                    className={`add-to-cart-btn ${!selectedLocation?.address ? 'disabled' : ''}`}
+                    className="add-to-cart-btn"
                     onClick={handleAddToCartClick}
-                    disabled={!selectedLocation?.address}
                 >
                     <span className="cart-icon">🛒</span>
                     {language === 'ru' ? 'В корзину' : 'Savatga'}
