@@ -2,8 +2,8 @@ import { getImageUrl } from '../api';
 import './CategoryList.css';
 
 export default function CategoryList({ categories, selectedCategory, onSelectCategory, onShowAllCategories, language }) {
-    const displayCategories = categories.slice(0, 15);
-    const hasMore = categories.length > 15;
+    const displayCategories = categories;
+    const hasMore = false;
 
     return (
         <div className="category-list-container">

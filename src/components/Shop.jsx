@@ -710,7 +710,7 @@ const Shop = ({ language, theme, toggleTheme }) => {
                 />
 
                 <div className="featured-sections">
-                    {categories.slice(0, 6).map(category => (
+                    {categories.map(category => (
                         <CategorySection
                             key={category.id}
                             category={category}
