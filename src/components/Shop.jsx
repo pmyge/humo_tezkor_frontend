@@ -383,13 +383,15 @@ const Shop = ({ language, theme, toggleTheme }) => {
             return;
         }
 
-        // 2. Check for Location next
-        if (!locationToUse || !locationToUse.latitude) {
-            console.log('DEBUG: No valid location, opening LocationPicker');
+        // 2. FORCE Location selection every time (per user request)
+        if (!providedLocation || !providedLocation.latitude) {
+            console.log('DEBUG: Forcing fresh location selection');
             setIsCheckingOut(true);
             setShowLocationPicker(true);
             return;
         }
+
+        const locationToUse = providedLocation;
 
         if (cart.length === 0) return;
 
