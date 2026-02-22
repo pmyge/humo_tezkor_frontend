@@ -369,9 +369,6 @@ const Shop = ({ language, theme, toggleTheme }) => {
     };
 
     const submitFullOrder = async (providedLocation = null) => {
-        // Fix: If this is called from an onClick event, providedLocation will be the Event object.
-        const locationToUse = (providedLocation && providedLocation.latitude) ? providedLocation : selectedLocation;
-
         // 1. Check for Phone Number first
         // We consider it missing if it's null, empty, or just a dash "-"
         const hasPhone = currentUser?.phone_number && currentUser.phone_number !== '-';
