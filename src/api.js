@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://humo-tezkor-backend.onrender.com/api';
+const API_BASE_URL = 'https://humo-tezkor.uz/api';
 
 const fetchWithBypass = async (url, options = {}) => {
     const controller = new AbortController();
